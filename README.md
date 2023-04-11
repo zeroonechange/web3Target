@@ -1,2 +1,29 @@
-# web3Target
-one month  ---  see what I can do .  start at 2023/4/11  
+# 一个月挑战 
+
+
+* [ ] 彻底搞明白   ERC-4337 协议
+* [ ] 密码学  各种签名算法   BLS 签名算法
+* [ ] 以太坊底层(NLP MPT等)原理
+* [ ] GAS 优化
+
+```c
+    前端:
+        复习安卓  学习 flutter   搞一个
+        模仿一个 AA 钱包   ERC-4337 实现  走全栈   模仿 Candide Android 
+    后端:
+        Gas优化
+        以太坊底层(NLP MPT等)原理
+        密码学 深入学习研究   BLS 签名算法
+        layer2 技术
+        安全 审计
+                defi 源码
+
+区块链之路历经坎坷   继续努力   start at 2023/4/11  
+
+计划一个月 
+    上午学难的东西   下午敲代码  晚上看代码 
+    没事就去健身   自律起来
+
+```
+
+ 
