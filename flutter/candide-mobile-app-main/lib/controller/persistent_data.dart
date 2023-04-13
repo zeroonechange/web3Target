@@ -39,6 +39,7 @@ class PersistentData {
   // Temporary session values
   static final Map<int, List<dynamic>> _recoverableStatus = {}; // Map<Account HashCode, [bool recoverable, int expireAt]> temporarily store recoverable status of accounts instead of always fetching it
 
+  // 从 Hive 数据库 加载
   static loadExplorerJson(Account account, Map? json) async {
     json ??= Hive.box("state").get("address_data(${account.address.hex}-${account.chainId})");
     if (json == null){

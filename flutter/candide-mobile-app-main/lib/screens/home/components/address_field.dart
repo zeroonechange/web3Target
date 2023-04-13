@@ -17,11 +17,12 @@ import 'package:web3dart/credentials.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:http/http.dart';
 
+// 输入地址 +  二维码扫描
 class AddressField extends StatefulWidget {
   final String hint;
   final bool scanENS;
   final bool filled;
-  final Function(String) onAddressChanged;
+  final Function(String) onAddressChanged;  // 改变
   final Function(Map?) onENSChange;
   final Widget qrAlertWidget;
   const AddressField({Key? key, required this.onAddressChanged, required this.onENSChange, required this.hint, this.filled=true, this.scanENS=true, required this.qrAlertWidget}) : super(key: key);

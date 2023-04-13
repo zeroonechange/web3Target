@@ -14,6 +14,7 @@ import 'package:hive/hive.dart';
 import 'package:wallet_dart/wallet/account_helpers.dart';
 import 'package:web3dart/web3dart.dart';
 
+//启动页
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
 
@@ -23,14 +24,16 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
 
+  // 跳转到主页
   navigateToHome(){
-    PersistentData.loadExplorerJson(PersistentData.selectedAccount, null);
-    SettingsData.loadFromJson(null);
-    Get.off(const HomeScreen());
+    PersistentData.loadExplorerJson(PersistentData.selectedAccount, null);  // 从数据库加载数据
+    SettingsData.loadFromJson(null);      // 数据库加载 当前货币
+    Get.off(const HomeScreen());        // 路由跳转到主页
   }
 
+  // 认证
   authenticate() async {
-    Get.to(PinEntryScreen(
+    Get.to(PinEntryScreen(  // pin 认证
       showLogo: true,
       promptText: "Enter PIN code",
       confirmMode: false,
@@ -53,27 +56,28 @@ class _SplashScreenState extends State<SplashScreen> {
     ));
   }
 
+  // 初始化  异步的
   initialize() async {
     await Future.wait([
-      Hive.openBox("signers"),
-      Hive.openBox("wallet"),
-      Hive.openBox("settings"),
+      Hive.openBox("signers"), // 签名 打开表?
+      Hive.openBox("wallet"),  // 钱包
+      Hive.openBox("settings"), // 设置
       Hive.openBox("state"),
       Hive.openBox("activity"),
       Hive.openBox("wallet_connect"),
       Hive.openBox("tokens_storage"),
     ]);
-    Networks.initialize();
-    Networks.configureVisibility();
-    PersistentData.loadSigners();
-    PersistentData.loadAccounts();
-    SettingsData.loadFromJson(null);
+    Networks.initialize();  // 初始化 RPC 网络  货币  chainId  entryPoint 合约地址 其他合约地址 ...
+    Networks.configureVisibility(); // 是否可见  Network.visible 参数
+    PersistentData.loadSigners();   // 从数据库中加载签名 需要解密  web3dart
+    PersistentData.loadAccounts();  // 从数据库中加载账号
+    SettingsData.loadFromJson(null);  // 数据库加载 货币符号
     //
-    if (PersistentData.accounts.isEmpty){
-      Get.off(const WalletOnboarding());
+    if (PersistentData.accounts.isEmpty){ // 没有账号
+      Get.off(const WalletOnboarding());   // 引导页
     }else{
-      eventBus.fire(OnAccountChange());
-      authenticate();
+      eventBus.fire(OnAccountChange());    // 好像没看到有订阅者监听
+      authenticate();               // pin 认证  去 PinEntryScreen
     }
   }
 
@@ -83,11 +87,11 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
   }
 
-
+  // 先执行 build 方法  再跑 initState 方法
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
+      body: Center(  // 居中
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

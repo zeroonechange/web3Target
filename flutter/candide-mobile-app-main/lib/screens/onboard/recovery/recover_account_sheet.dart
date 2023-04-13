@@ -10,9 +10,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wallet_dart/wallet/account.dart';
 
+
+// Recover 页面  恢复自己的账号
 class RecoverAccountSheet extends StatefulWidget {
-  final String method;
-  final Function(String, int, String?, bool?, String) onNext;
+
+  final String method;  // social-recovery
+  final Function(String, int, String?, bool?, String) onNext;  // GuardianRecoveryHelper.setupRecoveryAccount
   const RecoverAccountSheet({Key? key, required this.onNext, required this.method}) : super(key: key);
 
   @override
@@ -28,9 +31,9 @@ class _RecoverAccountSheetState extends State<RecoverAccountSheet> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints){
-        return SingleChildScrollView(
+        return SingleChildScrollView( // 布局
           controller: Get.find<ScrollController>(tag: "recovery_account_modal"),
-          child: ConstrainedBox(
+          child: ConstrainedBox(   // 布局
             constraints: BoxConstraints(minWidth: constraints.maxWidth, minHeight: constraints.maxHeight),
             child: IntrinsicHeight(
               child: Column(
@@ -52,7 +55,7 @@ class _RecoverAccountSheetState extends State<RecoverAccountSheet> {
                   const SizedBox(height: 5,),
                   Container(
                     margin: const EdgeInsets.symmetric(horizontal: 3),
-                    child: ChainSelector(
+                    child: ChainSelector(     // 将好几个封装在这一个控件里面
                       selectedChainId: chainId,
                       onSelect: (_chainId){
                         setState(() {
@@ -80,7 +83,7 @@ class _RecoverAccountSheetState extends State<RecoverAccountSheet> {
                     onENSChange: (Map? ens) {
                       // ENS is disabled
                     },
-                    hint: "Lost account public address (0x)",
+                    hint: "Lost account public address (0x) ",
                     filled: false,
                     scanENS: false,
                     qrAlertWidget: const QRAlertRecoveryFail(),

@@ -13,7 +13,7 @@ class ChainSelector extends StatelessWidget {
     return Wrap(
       alignment: WrapAlignment.center,
       children: [
-        for (Network network in Networks.instances.where((element) => element.visible))
+        for (Network network in Networks.instances.where((element) => element.visible))  // 还能这么写?
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 5),
             child: ElevatedButton(

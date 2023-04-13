@@ -10,6 +10,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
+// 欢迎页 下滑第三个页面   有动画效果
 class LandingScreen extends StatefulWidget {
   const LandingScreen({Key? key}) : super(key: key);
 
@@ -37,12 +38,12 @@ class _LandingScreenState extends State<LandingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
+      body: SafeArea(   // 什么玩意儿
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(height: 50,),
-            AnimatedSlide(
+            AnimatedSlide(            // 把 动画+图片 当作一个widget?
               offset: _offsetValue,
               curve: Curves.easeInOut,
               duration: const Duration(milliseconds: 1000),
@@ -67,10 +68,10 @@ class _LandingScreenState extends State<LandingScreen> {
             const Spacer(flex: 2,),
             Container(
               margin: EdgeInsets.symmetric(horizontal: Get.width * 0.125),
-              child: ElevatedButton(
+              child: ElevatedButton(  // button 里面不能直接写 text  还得搞个 child 用来确定 text
                 onPressed: () {
                   Get.to(
-                    OnboardDisclaimerScreen(
+                    OnboardDisclaimerScreen(   // 对应 create a new wallet
                       onContinue: (){
                         Get.back();
                         Navigator.push(context, SharedAxisRoute(builder: (_) => const CreateAccountMainScreen(), transitionType: SharedAxisTransitionType.horizontal));
@@ -95,11 +96,11 @@ class _LandingScreenState extends State<LandingScreen> {
               margin: EdgeInsets.symmetric(horizontal: Get.width * 0.125),
               child: TextButton(
                 onPressed: () async {
-                  await showBarModalBottomSheet(
+                  await showBarModalBottomSheet(   // 对应 I already have a wallet  会显示一个弹窗   modal_bottom_sheet
                     context: context,
                     backgroundColor: Get.theme.canvasColor,
                     builder: (context) {
-                      Get.put<ScrollController>(ModalScrollController.of(context)!, tag: "recovery_account_modal");
+                      Get.put<ScrollController>(ModalScrollController.of(context)!, tag: "recovery_account_modal"); // 这是干啥子  放东西进一个全局的容器  get 使用
                       return const RecoverAccountSheet(
                           method: "social-recovery",
                           onNext: GuardianRecoveryHelper.setupRecoveryAccount
@@ -108,9 +109,7 @@ class _LandingScreenState extends State<LandingScreen> {
                   );
                 },
                 style: ButtonStyle(
-                  shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  )),
+                  shape: MaterialStateProperty.all(RoundedRectangleBorder(  borderRadius: BorderRadius.circular(15), )),
                   minimumSize: MaterialStateProperty.all(const Size.fromHeight(50)),
                   backgroundColor: MaterialStateProperty.all<Color>(Get.theme.cardColor),
                 ),

@@ -11,8 +11,7 @@ class WalletOnboarding extends StatefulWidget {
   const WalletOnboarding({Key? key}) : super(key: key);
 
   @override
-  State<WalletOnboarding> createState() =>
-      _WalletOnboardingState();
+  State<WalletOnboarding> createState() => _WalletOnboardingState();
 }
 
 class _WalletOnboardingState extends State<WalletOnboarding> {
@@ -33,14 +32,14 @@ class _WalletOnboardingState extends State<WalletOnboarding> {
         description: "It's Open Source. It's build for the Ethereum Public Good",
         trailing: Column(
           children: const [
-            OnboardingFeatureCard(title: "Contact Based Recovery", icon: Icon(PhosphorIcons.checkCircleFill, size: 25, color: Colors.green)), 
+            OnboardingFeatureCard(title: "Contact Based Recovery", icon: Icon(PhosphorIcons.checkCircleFill, size: 25, color: Colors.green)),
             OnboardingFeatureCard(title: "Pay Gas in supported Tokens", icon: Icon(PhosphorIcons.checkCircleFill, size: 25, color: Colors.green)),
             OnboardingFeatureCard(title: "Future Censorship Resistant", icon: Icon(PhosphorIcons.checkCircleFill, size: 25, color: Colors.green)),
             ]
           ),
       )
     ),
-    PageModel(widget: const SizedBox.shrink()),
+    PageModel(widget: const SizedBox.shrink()), // w=h=0  空的  划到这个时直接跳转页面了
   ];
 
   @override
@@ -53,16 +52,16 @@ class _WalletOnboardingState extends State<WalletOnboarding> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Onboarding(
-        pages: onboardingPagesList,
-        onPageChange: (int pageIndex) async {
+        pages: onboardingPagesList, // widgets 集合
+        onPageChange: (int pageIndex) async {   // 监听滑动变化
           index = pageIndex;
           if (index == (onboardingPagesList.length - 1) ){
             await Future.delayed(const Duration(milliseconds: 200));
-            Get.off(const LandingScreen());
+            Get.off(const LandingScreen());  // 划到最后一个页面时 去这个页面
           }
         },
         startPageIndex: 0,
-        footerBuilder: (context, dragDistance, pagesLength, setIndex) {
+        footerBuilder: (context, dragDistance, pagesLength, setIndex) {  // 底部的下划线 指示器
           return Container(
             margin: const EdgeInsets.only(bottom: 50, right: 85),
             color: Colors.transparent,
@@ -99,6 +98,7 @@ class _OnBoardStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Container(
       height: double.maxFinite,
       width: double.maxFinite,
@@ -106,7 +106,7 @@ class _OnBoardStep extends StatelessWidget {
       child: Column(
         children: [
           const SizedBox(height: 75,),
-          leading ?? const SizedBox.shrink(),
+          leading ?? const SizedBox.shrink(),  // 好像占位符
           Container(
             margin: const EdgeInsets.all(25),
             child: Text(
