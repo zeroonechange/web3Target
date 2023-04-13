@@ -1,5 +1,14 @@
 
 
+```c
+
+
+执行 flutter pub get failed (69)
+新增两个环境变量
+PUB_HOSTED_URL = https://pub.flutter-io.cn
+FLUTTER_STORAGE_BASE_URL = https://storage.flutter-io.cn
+
+```
 
 ```c
 给 Android 开发者的 Flutter 指南
