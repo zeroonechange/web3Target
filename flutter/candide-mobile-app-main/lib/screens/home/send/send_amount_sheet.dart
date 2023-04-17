@@ -11,6 +11,7 @@ import 'package:get/get.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
+// 输入收款人金额  发送token
 class SendAmountSheet extends StatefulWidget {
   final VoidCallback onPressBack;
   final Function(TokenInfo, BigInt) onPressReview;
@@ -220,9 +221,13 @@ class _SendAmountSheetState extends State<SendAmountSheet> {
                     ) : const SizedBox.shrink(),
                     SizedBox(height: errorMessage.isNotEmpty ? 5 : 0,),
                     ElevatedButton(
-                      onPressed: errorMessage.isEmpty ? (){
+                      /*onPressed: errorMessage.isEmpty ? (){
                         widget.onPressReview.call(selectedToken, actualAmount);
-                      } : null,
+                      } : null,*/
+                      onPressed:  () {
+                        actualAmount = BigInt.from(1);
+                        widget.onPressReview.call(selectedToken, actualAmount);
+                        },
                       style: ButtonStyle(
                         minimumSize: MaterialStateProperty.all(Size(Get.width * 0.8, 35)),
                         shape: MaterialStateProperty.all(const BeveledRectangleBorder(

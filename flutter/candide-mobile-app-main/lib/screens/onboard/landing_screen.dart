@@ -74,6 +74,7 @@ class _LandingScreenState extends State<LandingScreen> {
                     OnboardDisclaimerScreen(   // 对应 create a new wallet
                       onContinue: (){
                         Get.back();
+                        // 跳转  goNext()   创建账号页面
                         Navigator.push(context, SharedAxisRoute(builder: (_) => const CreateAccountMainScreen(), transitionType: SharedAxisTransitionType.horizontal));
                       },
                     ),

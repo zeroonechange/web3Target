@@ -6,6 +6,7 @@ import 'package:info_popup/info_popup.dart';
 import 'package:lottie/lottie.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
+// 创建账号 页面1   select the network in which your account will live in
 class CreateAccountChainScreen extends StatefulWidget {
   final String confirmButtonLabel;
   final VoidCallback? onBack;
@@ -38,7 +39,7 @@ class _CreateAccountChainScreenState extends State<CreateAccountChainScreen> {
             child: IntrinsicHeight(
               child: Column(
                 children: [
-                  widget.onBack != null ? Container(
+                  widget.onBack != null ? Container(       //返回按钮
                     margin: const EdgeInsets.only(left: 15, top: 10),
                     alignment: Alignment.centerLeft,
                     child: IconButton(
@@ -46,13 +47,13 @@ class _CreateAccountChainScreenState extends State<CreateAccountChainScreen> {
                       icon: const Icon(Icons.arrow_back_rounded),
                     ),
                   ) : const SizedBox.shrink(),
-                  Lottie.asset('assets/animations/wallet-info.json', width: 200, reverse: true),
+                  Lottie.asset('assets/animations/wallet-info.json', width: 200, reverse: true), // 动画效果
                   const SizedBox(height: 25,),
                   Container(
                     margin: const EdgeInsets.symmetric(horizontal: 15),
                     child: RichText(
                       textAlign: TextAlign.center,
-                      text: TextSpan(
+                      text: TextSpan(          // 使用 TextSpan 多种颜色的字
                         text: "Select the ",
                         style: TextStyle(fontFamily: AppThemes.fonts.gilroyBold, fontSize: 18),
                         children: const [
@@ -84,13 +85,13 @@ class _CreateAccountChainScreenState extends State<CreateAccountChainScreen> {
                     margin: const EdgeInsets.symmetric(horizontal: 25),
                     child: TextFormField(
                       decoration: InputDecoration(
-                        label: const Text("Account name"),
+                        label: const Text("Account name"),  // 这个怎么能跑到上面去?
                         hintText: "e.g. john-${Networks.getByChainId(chainId)!.name.toLowerCase().replaceAll(" ", "-")}",
                         suffixIcon: InfoPopupWidget(
                           arrowTheme: InfoPopupArrowTheme(
                             color: Colors.black.withOpacity(0.8),
                           ),
-                          customContent: Container(
+                          customContent: Container(    // 点击右侧的 图标
                             padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
                             decoration: BoxDecoration(
                               color: Colors.black.withOpacity(0.8),
@@ -106,7 +107,7 @@ class _CreateAccountChainScreenState extends State<CreateAccountChainScreen> {
                       ),
                       validator: (String? input){
                         input ??= "";
-                        if ((input).trim().isEmpty) return "Account name required.";
+                        if ((input).trim().isEmpty) return "Account name required.";  // 校验不通过 会出现提示语
                         if (!isValidName(input)) return "Invalid account name";
                         return null;
                       },
@@ -115,10 +116,10 @@ class _CreateAccountChainScreenState extends State<CreateAccountChainScreen> {
                     ),
                   ),
                   const SizedBox(height: 12,),
-                  _AccountChainAlert(network: Networks.getByChainId(chainId)!,),
+                  _AccountChainAlert(network: Networks.getByChainId(chainId)!,),  // 下方的提示语
                   const SizedBox(height: 12,),
                   ElevatedButton(
-                    onPressed: !isValidName(name) ? null : (){
+                    onPressed: !isValidName(name) ? null : (){  // 这里自动做了校验  不过就是灰色
                       widget.onNext.call(name, chainId);
                     },
                     style: ButtonStyle(

@@ -8,6 +8,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
+
+// 二维码扫描
 class AddressQRScanner extends StatefulWidget {
   final Function(String) onScanAddress;
   final Widget alertWidget;

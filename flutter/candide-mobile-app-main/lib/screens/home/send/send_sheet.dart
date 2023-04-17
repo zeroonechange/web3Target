@@ -38,7 +38,8 @@ class _SendSheetState extends State<SendSheet> {
   Map fee = {};
   //
   Batch? sendBatch;
-  //
+
+  // 俩个页面   一个输入收款人账号  一个是输入金额
   initPages(){
     pagesList = [
       SendToSheet(
@@ -65,23 +66,25 @@ class _SendSheetState extends State<SendSheet> {
   }
   //
 
+  // 发送token 核心逻辑
   onPressReview(TokenInfo _currency, BigInt value) async {
+    print("onPressReview currency=$_currency  value=$value ");
     currency = _currency;
     var cancelLoad = Utils.showLoading();
     //
     sendBatch = Batch();
-    //
+    // 构建 交易数据结构
     GnosisTransaction transaction = SendController.buildTransaction(
       sendToken: _currency,
       to: toAddress,
       value: value,
     );
-    //
+    // 添加进
     sendBatch!.transactions.add(transaction);
-    //
+    // 获取 gas 费吗?
     List<FeeToken>? feeCurrencies = await Bundler.fetchPaymasterFees(PersistentData.selectedAccount.chainId);
     if (feeCurrencies == null){
-      // todo handle network errors
+      cancelLoad();
       return;
     }else{
       await sendBatch!.changeFeeCurrencies(feeCurrencies);

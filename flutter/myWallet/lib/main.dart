@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'package:mywallet/wallet/account_utils.dart';
+import 'package:web3dart/crypto.dart';
+import 'package:mywallet/wallet/encrypted_signer.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -14,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'ERC4337 wallet demo'),
+      home: const MyHomePage(title: 'my wallet demo'),
     );
   }
 }
@@ -30,8 +34,10 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
-  void _createAccount(){
-
+  void _createAccount() async{
+    var signerSalt = bytesToHex(AccountUtils.randomBytes(16, secure: true));
+    EncryptedSigner account = await AccountUtils.createAccount(salt: signerSalt, password: "12345678");
+    print("address: ${account.publicAddress}  encrypted privateKey: ${account.encryptedPrivateKey}  salt: ${account.salt}");
   }
 
   void _incrementCounter() {
@@ -52,25 +58,62 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             ElevatedButton(
                 onPressed: () {
-
-                } ,
+                  _createAccount();
+                },
                 child: const Text('create account')
             ),
-            const Text(
-              'You have pushed the button this many times:',
+            ElevatedButton(
+                onPressed: () {
+
+                },
+                child: const Text('import account')
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+            ElevatedButton(
+                onPressed: () {
+
+                },
+                child: const Text('export account')
             ),
+            const Text("\$0.00", style: TextStyle(fontSize: 30),),
+            ElevatedButton(
+                onPressed: () {
+
+                },
+                child: const Text('get account balance')
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                    onPressed: () {
+
+                    },
+                    child: const Text('Receive')
+                ),
+                ElevatedButton(
+                    onPressed: () {
+
+                    },
+                    child: const Text('Send')
+                ),
+                ElevatedButton(
+                    onPressed: () {
+
+                    },
+                    child: const Text('Swap')
+                ),
+              ],
+            ),
+            ElevatedButton(
+                onPressed: () {
+
+                },
+                child: const Text('fetch Recent History')
+            ),
+
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

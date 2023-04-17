@@ -2,6 +2,7 @@ import 'package:candide_mobile_app/config/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
+// 自定义键盘输入
 class CustomPinKeyboard extends StatefulWidget {
   final bool showFingerprintAction;
   final Function(String) onKeyPress;

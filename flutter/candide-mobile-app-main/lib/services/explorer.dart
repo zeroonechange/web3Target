@@ -18,6 +18,7 @@ class Explorer {
     try{
       if (!skipBalances){
         var balances = await BalanceService.fetchBalances(account: account, additionalCurrencies: additionalCurrencies ?? []);
+        print('Explorer.fetchAddressOverview   balance= $balances ');
         await PersistentData.updateExplorerJson(account, balances);
       }
       //

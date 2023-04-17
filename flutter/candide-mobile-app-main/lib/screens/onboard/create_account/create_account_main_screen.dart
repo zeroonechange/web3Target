@@ -18,6 +18,7 @@ import 'package:wallet_dart/wallet/account_helpers.dart';
 import 'package:wallet_dart/wallet/encrypted_signer.dart';
 import 'package:web3dart/credentials.dart';
 
+// 创建账号
 class CreateAccountMainScreen extends StatefulWidget {
   final Account? baseAccount; // account to inherit some properties from, like encrypted signer, initial owner, etc..
   const CreateAccountMainScreen({Key? key, this.baseAccount}) : super(key: key);
@@ -34,11 +35,13 @@ class _CreateAccountMainScreenState extends State<CreateAccountMainScreen> {
   String name = "Account 1";
   int chainId = 10;
 
+
+  // 使用生物指纹   password=000000  biometricsEnabled=true
   void onRegisterConfirm(String? password, bool biometricsEnabled) async {
     if (password == null && widget.baseAccount == null) return;
     if (password != null && biometricsEnabled){
       try {
-        final store = await BiometricStorage().getStorage('auth_data');
+        final store = await BiometricStorage().getStorage('auth_data');  // 文件加密存储
         await store.write(password);
         await Hive.box("settings").put("biometrics_enabled", true);
       } on AuthException catch(_) {
@@ -51,13 +54,13 @@ class _CreateAccountMainScreenState extends State<CreateAccountMainScreen> {
     var cancelLoad = Utils.showLoading();
     Network network = Networks.getByChainId(chainId)!;
     if (PersistentData.walletSigners.isEmpty){
-      var signerSalt = bytesToHex(Utils.randomBytes(16, secure: true));
-      EncryptedSigner mainSigner = await AccountHelpers.createEncryptedSigner(salt: signerSalt, password: password!);
-      await PersistentData.addSigner("main", mainSigner);
+      var signerSalt = bytesToHex(Utils.randomBytes(16, secure: true)); // 盐
+      EncryptedSigner mainSigner = await AccountHelpers.createEncryptedSigner(salt: signerSalt, password: password!); // 创建一般账号
+      await PersistentData.addSigner("main", mainSigner); // 添加主账号
     }
-    EncryptedSigner mainSigner = SignersController.instance.getSignerFromId("main")!;
-    String salt = bytesToHex(Utils.randomBytes(16, secure: true), include0x: false);
-    Account account = await AccountHelpers.createAccount(
+    EncryptedSigner mainSigner = SignersController.instance.getSignerFromId("main")!;  // 获取主账号
+    String salt = bytesToHex(Utils.randomBytes(16, secure: true), include0x: false);  // 盐
+    Account account = await AccountHelpers.createAccount(         // 创建ERC4337账号
       chainId: network.chainId.toInt(),
       name: name,
       signers: [mainSigner.publicAddress],
@@ -70,11 +73,11 @@ class _CreateAccountMainScreenState extends State<CreateAccountMainScreen> {
       client: network.client
     );
     if (SignersController.instance.privateKeys.isEmpty && password != null){
-      Credentials? credentials = await AccountHelpers.decryptSigner(mainSigner, password);
+      Credentials? credentials = await AccountHelpers.decryptSigner(mainSigner, password);  // 拿到私钥
       SignersController.instance.storePrivateKey("main", credentials! as EthPrivateKey);
     }
-    await PersistentData.insertAccount(account);
-    PersistentData.selectAccount(address: account.address, chainId: account.chainId);
+    await PersistentData.insertAccount(account);    // ERC4337账号
+    PersistentData.selectAccount(address: account.address, chainId: account.chainId);  //
     eventBus.fire(OnAccountChange());
     cancelLoad();
     navigateToHome();
@@ -102,23 +105,23 @@ class _CreateAccountMainScreenState extends State<CreateAccountMainScreen> {
   void initState() {
     pagesList = [
       CreateAccountChainScreen(
-        onNext: (String _name, int _chain){
+        onNext: (String _name, int _chain){   // 封装的好  第一个页面返回 账号名词 + chainId
           name = _name;
           chainId = _chain;
-          if (widget.baseAccount != null){
+          if (widget.baseAccount != null){  // 如果已经创建帐号了  不用走下面的输入PIN或者指纹了
             bool biometricEnabled = Hive.box("settings").get("biometrics_enabled", defaultValue: false);
             onRegisterConfirm(null, biometricEnabled);
             return;
           }
           setState(() {
             reverse = false;
-            currentIndex = 1;
+            currentIndex = 1;  // 自动跳转到 下一个  设置 pin的页面去了
           });
         },
         onBack: onBackPress,
         confirmButtonLabel: widget.baseAccount == null ? "Next" : "Create account",
       ),
-      PinEntryScreen(
+      PinEntryScreen(  // choose a pin to unlock your wallet
         showLogo: false,
         promptText: "Choose a PIN to unlock your wallet",
         confirmText: "Confirm your chosen PIN",
@@ -135,13 +138,13 @@ class _CreateAccountMainScreenState extends State<CreateAccountMainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: PageTransitionSwitcher(
+        child: PageTransitionSwitcher(  //这里放了俩个 页面
           transitionBuilder: (
               Widget child,
               Animation<double> animation,
               Animation<double> secondaryAnimation,
               ) {
-            return SharedAxisTransition(
+            return SharedAxisTransition(  // 动画
               animation: animation,
               secondaryAnimation: secondaryAnimation,
               transitionType: SharedAxisTransitionType.horizontal,

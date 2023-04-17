@@ -9,6 +9,7 @@ import 'package:web3dart/web3dart.dart';
 
 class BalanceService {
 
+  // 获取 账户余额  输出 usd
   static Future<Map> fetchBalances({
     required Account account,
     required List<TokenInfo> additionalCurrencies
@@ -46,11 +47,15 @@ class BalanceService {
         function: candideBalancesContract.function("tokenBalances"),
         params: [account.address, tokens],
       ).then((value) => _balancesResult = value),
-      getETHUSDPrice().then((value) => ethUsdPrice = value),
+      getETHUSDPrice().then((value) => {
+        ethUsdPrice = value
+      }),
       Dio().get(
         "https://api.coingecko.com/api/v3/simple/token_price/${network.coinGeckoAssetPlatform}?contract_addresses=$tokenAddresses&vs_currencies=eth"
       ).then((value) => response = value),
     ]);
+
+    print("BalanceService  ethUsdPrice=$ethUsdPrice");
     //
     List<BigInt> balances = (_balancesResult[0] as List<dynamic>).cast<BigInt>();
     Map quotes = response.data;

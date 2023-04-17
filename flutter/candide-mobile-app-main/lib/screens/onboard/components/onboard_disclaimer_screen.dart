@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
+//创建新的账号  Disclaimer   RoundedRectangleBorder
 class OnboardDisclaimerScreen extends StatefulWidget {
   final VoidCallback onContinue;
   const OnboardDisclaimerScreen({Key? key, required this.onContinue}) : super(key: key);
@@ -22,7 +23,7 @@ class _OnboardDisclaimerScreenState extends State<OnboardDisclaimerScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leadingWidth: 40,
-        leading: Container(
+        leading: Container(  // 返回按钮
           margin: const EdgeInsets.only(left: 10),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
@@ -53,11 +54,11 @@ class _OnboardDisclaimerScreenState extends State<OnboardDisclaimerScreen> {
             const SizedBox(height: 10,),
             Directionality(
               textDirection: TextDirection.rtl,
-              child: CheckboxListTile(
+              child: CheckboxListTile(    // checkbox
                 onChanged: (val) => setState(() => _acceptFirstCondition = (val ?? false)),
                 value: _acceptFirstCondition,
                 activeColor: Colors.blue,
-                shape: RoundedRectangleBorder(
+                shape: RoundedRectangleBorder(   // 外面的线条
                   borderRadius: BorderRadius.circular(7),
                   side: BorderSide(color: Get.theme.colorScheme.primary.withOpacity(0.5), width: 0.4)
                 ),
@@ -87,11 +88,11 @@ class _OnboardDisclaimerScreenState extends State<OnboardDisclaimerScreen> {
               ),
             ),
             const SizedBox(height: 10,),
-            SizedBox(
+            SizedBox(     // 这也能装
               width: 120,
               child: ElevatedButton(
                 onPressed: _acceptFirstCondition && _acceptSecondCondition ? (){
-                  widget.onContinue.call();
+                  widget.onContinue.call();  // 调用 onContinue  外面传进来的
                 } : null,
                 style: ButtonStyle(
                   shape: MaterialStatePropertyAll(RoundedRectangleBorder(

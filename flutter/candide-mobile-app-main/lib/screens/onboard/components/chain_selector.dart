@@ -3,6 +3,7 @@ import 'package:candide_mobile_app/config/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+// 区块链RPC选择控件   optimism Goerli ,  Gorili , Sepolia
 class ChainSelector extends StatelessWidget {
   final int selectedChainId;
   final Function(int) onSelect;

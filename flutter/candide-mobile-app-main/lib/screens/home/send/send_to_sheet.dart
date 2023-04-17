@@ -6,6 +6,7 @@ import 'package:candide_mobile_app/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+// 输入 收款人账号  可以二维码扫描
 class SendToSheet extends StatefulWidget {
   final Function(String) onNext;
   const SendToSheet({Key? key, required this.onNext}) : super(key: key);

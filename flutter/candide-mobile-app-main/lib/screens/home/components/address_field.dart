@@ -42,7 +42,8 @@ class _AddressFieldState extends State<AddressField> {
   bool ensTimerActive = false;
   Timer? ensTimer;
   Map? _ensResponse;
-  //
+
+
   // Starts/restarts ENS Timer, or stops the timer if regex doesn't match
   void restartENSListener() async {
     if (!widget.scanENS) return;
@@ -63,6 +64,7 @@ class _AddressFieldState extends State<AddressField> {
     });
   }
 
+  // 检索 ENS
   void retrieveENS() async {
     if (_ensResponse != null){
       if (_ensResponse!["lastEns"] == address) return;
@@ -75,7 +77,7 @@ class _AddressFieldState extends State<AddressField> {
     var ens = Ens(client: Web3Client(Env.mainnetRpcEndpoint, Client())); // todo only resolves addresses on mainnet (note currently all ENS scans are disabled through widget.scanENS)
     EthereumAddress? _ensAddress;
     try {
-      _ensAddress = await ens.withName(searchingENS).getAddress();
+      _ensAddress = await ens.withName(searchingENS).getAddress();  // 获取地址
     } catch (e) {
       //todo handle offchain resolvers because ens_dart and ens_lookup packages both don't support it
       _ensAddress = null;
@@ -113,7 +115,7 @@ class _AddressFieldState extends State<AddressField> {
         Container(
             margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
             alignment: Alignment.centerLeft,
-            child: TextFormField(
+            child: TextFormField(     // 输入校验
               controller: _addressController,
               decoration: InputDecoration(
                 hintText: widget.hint,
@@ -122,13 +124,13 @@ class _AddressFieldState extends State<AddressField> {
                 border: const ContinousInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(35),)
                 ),
-                suffixIcon: _ensResponse == null ? (!ensTimerActive ? IconButton(
+                suffixIcon: _ensResponse == null ? (!ensTimerActive ? IconButton(   // 右边的icon  suffix=后缀
                   onPressed: (){
                     showBarModalBottomSheet(
                       context: context,
                       backgroundColor: Get.theme.canvasColor,
                       builder: (context) {
-                        return AddressQRScanner(
+                        return AddressQRScanner(   //二维码扫描
                           onScanAddress: (_address){
                             address = _address;
                             _addressController.text = address;

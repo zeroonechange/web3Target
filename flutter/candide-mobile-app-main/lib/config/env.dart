@@ -30,7 +30,6 @@ class Env {
       //case 10: return optimismGoerliBundlerEndpoint;
       case 420: return optimismGoerliBundlerEndpoint;
       case 11155111: return sepoliaBundlerEndpoint;
-      //
       default: return optimismRpcEndpoint;
     }
   }

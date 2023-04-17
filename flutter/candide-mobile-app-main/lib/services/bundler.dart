@@ -86,9 +86,11 @@ class Bundler {
   }
 
   static Future<List<FeeToken>?> fetchPaymasterFees(int chainId) async {
-    var bundlerEndpoint = Env.getBundlerUrlByChainId(chainId);
+    print("fetchPaymasterFees chainId is: $chainId");
+    var bundlerEndpoint = Env.getBundlerUrlByChainId(chainId); // rpc 节点
+    print("fetchPaymasterFees rpc is: $bundlerEndpoint");
     try{
-      var response = await Dio().post("$bundlerEndpoint/jsonrpc/paymaster",
+      var response = await Dio().post("$bundlerEndpoint/jsonrpc/paymaster",   // 直接发起 rpc 交易
         data: jsonEncode({
           "jsonrpc": "2.0",
           "id": 1,
@@ -98,6 +100,7 @@ class Bundler {
       //
       List<FeeToken> result = [];
       for (String tokenData in response.data['result']){
+        print("tokenData is: $tokenData");
         var _tokenData = jsonDecode(tokenData.replaceAll("'", '"'));
         TokenInfo? _token = TokenInfoStorage.getTokenByAddress(_tokenData["address"]);
         if (_token == null) continue;

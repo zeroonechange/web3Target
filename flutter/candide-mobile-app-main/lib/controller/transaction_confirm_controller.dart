@@ -46,6 +46,7 @@ class TransactionConfirmController {
     ));
   }
 
+  // 输入密码后 开始进行 swap 交易
   static Future<bool?> confirmTransactions(EthPrivateKey? credentials, String? pin, Batch batch, TransactionActivity transactionActivity) async {
     var cancelLoad = Utils.showLoading();
     if (credentials == null){
@@ -58,27 +59,28 @@ class TransactionConfirmController {
         return null;
       }
     }
-    //
+    // 获取账户余额
     await Explorer.fetchAddressOverview(account: PersistentData.selectedAccount, skipBalances: true);
+    // 构建一个 OP
     UserOperation unsignedUserOperation = await batch.toUserOperation(
       PersistentData.selectedAccount,
       PersistentData.accountStatus.nonce,
       proxyDeployed: PersistentData.accountStatus.proxyDeployed,
     );
-    //
+    //给 OP 签名
     var signedUserOperation = await Bundler.signUserOperations(
       credentials,
       PersistentData.selectedAccount.chainId,
       unsignedUserOperation,
     );
-    //
+    //展示UI
     BotToast.showText(
       text: "Transaction sent, this might take a minute...",
       textStyle: TextStyle(fontFamily: AppThemes.fonts.gilroyBold, color: Colors.black),
       contentColor: Get.theme.colorScheme.primary,
       align: Alignment.topCenter,
     );
-    //
+    // eth_sendUserOperation  通过 bundler 发送请求   是直接的 http 请求啊    "$bundlerEndpoint/jsonrpc/bundler",  method=eth_sendUserOperation
     RelayResponse? response = await Bundler.relayUserOperation(signedUserOperation, PersistentData.selectedAccount.chainId);
     if (response?.status.toLowerCase() == "pending"){
       Utils.showBottomStatus(

@@ -131,6 +131,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
     return true;
   }
 
+  // 展示 自己的 账号二维码
   void showDepositModal(){
     showBarModalBottomSheet(
       context: context,

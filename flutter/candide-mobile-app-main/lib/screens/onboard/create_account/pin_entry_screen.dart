@@ -11,6 +11,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:pinput/pinput.dart';
 
+//设置PIN的页面  +  指纹识别  choose a pin to unlock your wallet
 class PinEntryScreen extends StatefulWidget {
   final bool showLogo;
   final String promptText;
@@ -49,16 +50,17 @@ class _PinEntryScreenState extends State<PinEntryScreen> {
 
   Future<String?> _getPasswordThroughBiometrics() async {
     try{
-      final store = await BiometricStorage().getStorage('auth_data');
+      // BiometricStorage().canAuthenticate()
+      final store = await BiometricStorage().getStorage('auth_data');  //取消的时候 lib/screens/home/settings/settings_screen.dart:102
       String? password = await store.read();
       return password;
     } on AuthException catch(_) {
       return null;
     }
   }
-
+  // 指纹识别
   Future<void> startBiometric() async {
-    String? password = await _getPasswordThroughBiometrics();
+    String? password = await _getPasswordThroughBiometrics(); // 获取密码?
     if (password == null){
       return;
     }else{
@@ -72,12 +74,12 @@ class _PinEntryScreenState extends State<PinEntryScreen> {
   Future<void> initBiometricsState() async {
     var response = await BiometricStorage().canAuthenticate();
     if (response != CanAuthenticateResponse.success) return;
-    if (widget.showBiometricsToggle){
+    if (widget.showBiometricsToggle){  //基于控件
       useBiometrics = true;
       setState(() => showBiometricsToggle = true);
       return;
     }
-    var biometricsEnabled = Hive.box("settings").get("biometrics_enabled");
+    var biometricsEnabled = Hive.box("settings").get("biometrics_enabled"); // 设置里面
     if (biometricsEnabled){
       setState(() {
         useBiometrics = true;
@@ -85,6 +87,7 @@ class _PinEntryScreenState extends State<PinEntryScreen> {
       startBiometric();
     }
   }
+
   @override
   void initState() {
     initBiometricsState();
@@ -134,7 +137,7 @@ class _PinEntryScreenState extends State<PinEntryScreen> {
             const SizedBox(height: 35,),
             Form(
               key: pinFormKey,
-              child: Pinput(
+              child: Pinput(      // 使用了 pinput 框架
                 controller: pinController,
                 defaultPinTheme: defaultPinTheme,
                 submittedPinTheme: defaultPinTheme.copyWith(
@@ -158,7 +161,7 @@ class _PinEntryScreenState extends State<PinEntryScreen> {
                         confirming = false;
                       });
                     }else{
-                      widget.onPinEnter(pin, useBiometrics);
+                      widget.onPinEnter(pin, useBiometrics);  //普通回调
                       return;
                     }
                   }else{
