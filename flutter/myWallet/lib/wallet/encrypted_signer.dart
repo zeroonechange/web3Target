@@ -21,4 +21,7 @@ class EncryptedSigner {
     'encryptedPrivateKey': encryptedPrivateKey,
     'publicAddress': publicAddress.hexEip55,
   };
+
+  String toAString() =>  'salt : $salt  \nencryptedPrivateKey: $encryptedPrivateKey  \npublicAddress: $publicAddress ';
+
 }

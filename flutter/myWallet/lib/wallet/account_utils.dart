@@ -36,22 +36,43 @@ class AccountUtils{
     var secureRandom = Random.secure();
     EthPrivateKey signer = EthPrivateKey.createRandom(secureRandom);
     return EncryptedSigner(
-      salt: salt,
-      encryptedPrivateKey: aesCrypt.cbc.encrypt(inp: bytesToHex(signer.privateKey, include0x: true), iv: base64Salt).toString(),
-      publicAddress: signer.address
+        salt: salt,
+        encryptedPrivateKey: aesCrypt.cbc.encrypt(inp: bytesToHex(signer.privateKey, include0x: true), iv: base64Salt).toString(),
+        publicAddress: signer.address
     );
   }
 
-
   static Uint8List randomBytes(int length, {bool secure = false}) {
     assert(length > 0);
-
     final random = secure ? Random.secure() : Random();
     final ret = Uint8List(length);
-
     for (var i = 0; i < length; i++) {
       ret[i] = random.nextInt(256);
     }
     return ret;
   }
+
+  static Future<String> getPrivateKey(String password, EncryptedSigner encryptedSigner) async{
+      String base64Salt = base64Encode(hexToBytes(encryptedSigner.salt));
+      String passwordKey = await _generatePasswordKeyThread(password, encryptedSigner.salt);
+      AesCrypt aesCrypt = AesCrypt(padding: PaddingAES.pkcs7, key: passwordKey);
+      String privateKey = aesCrypt.cbc.decrypt(enc: encryptedSigner.encryptedPrivateKey, iv: base64Salt);
+      var privateKeyBytes = hexToBytes(privateKey);
+      if (privateKeyBytes.length > 32){
+        int trim = privateKeyBytes.length - 32;
+        privateKeyBytes = privateKeyBytes.sublist(trim);
+      }
+      var pk = bytesToHex(privateKeyBytes, include0x: true);
+      return pk;
+  }
+
+  static Future<String> importAccountByPK(String pk) async{
+    print("importAccountByPK pk: $pk");
+    Uint8List privateKey = hexToBytes(pk);
+    Uint8List publicAddress = privateKeyBytesToPublic(privateKey);
+    String a = bytesToHex(publicKeyToAddress(publicAddress), include0x: true);
+    print("importAccountByPK address: $a");
+    return a;
+  }
+
 }

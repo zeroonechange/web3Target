@@ -32,18 +32,26 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  var PWD = "12345678";
+  late EncryptedSigner _account;
+  late String _pk;
 
   void _createAccount() async{
     var signerSalt = bytesToHex(AccountUtils.randomBytes(16, secure: true));
-    EncryptedSigner account = await AccountUtils.createAccount(salt: signerSalt, password: "12345678");
-    print("address: ${account.publicAddress}  encrypted privateKey: ${account.encryptedPrivateKey}  salt: ${account.salt}");
+    _account = await AccountUtils.createAccount(salt: signerSalt, password: PWD);
+    print("address: ${_account.publicAddress}  encrypted privateKey: ${_account.encryptedPrivateKey}  salt: ${_account.salt}");
   }
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+  void _exportAccount() async{
+    _pk = await AccountUtils.getPrivateKey(PWD, _account);
+  }
+
+  void _importAccount() async{
+    String pk = await AccountUtils.importAccountByPK(_pk) ?? "" ;
+  }
+
+  void _test() async{
+
   }
 
   @override
@@ -64,20 +72,20 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             ElevatedButton(
                 onPressed: () {
-
+                  _exportAccount();
                 },
-                child: const Text('import account')
+                child: const Text('export account')
             ),
             ElevatedButton(
                 onPressed: () {
-
+                  _importAccount();
                 },
-                child: const Text('export account')
+                child: const Text('import account')
             ),
             const Text("\$0.00", style: TextStyle(fontSize: 30),),
             ElevatedButton(
                 onPressed: () {
-
+                  _test();
                 },
                 child: const Text('get account balance')
             ),
