@@ -1,9 +1,16 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import 'package:mywallet/wallet/account_utils.dart';
+import 'package:mywallet/widget/deposite_sheet.dart';
 import 'package:web3dart/crypto.dart';
 import 'package:mywallet/wallet/encrypted_signer.dart';
 import 'package:mywallet/wallet/balance_service.dart';
+
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:get/get.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -16,6 +23,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'my wallet',
+      builder: BotToastInit(),
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -39,16 +47,19 @@ class _MyHomePageState extends State<MyHomePage> {
   String balance = "\$0.00";
 
   void _createAccount() async{
+    print('------_createAccount--------');
     var signerSalt = bytesToHex(AccountUtils.randomBytes(16, secure: true));
     _account = await AccountUtils.createAccount(salt: signerSalt, password: PWD);
     print("address: ${_account.publicAddress}  encrypted privateKey: ${_account.encryptedPrivateKey}  salt: ${_account.salt}");
   }
 
   void _exportAccount() async{
+    print('------_exportAccount--------');
     _pk = await AccountUtils.getPrivateKey(PWD, _account);
   }
 
   void _importAccount() async{
+    print('------_importAccount--------');
     String pk = await AccountUtils.importAccountByPK(_pk) ?? "" ;
   }
 
@@ -59,6 +70,17 @@ class _MyHomePageState extends State<MyHomePage> {
       balance;
     });
   }
+
+  void _receive() async{
+    showBarModalBottomSheet(
+        context: context,
+        backgroundColor: Get.theme.canvasColor,
+        builder: (context) => SingleChildScrollView(
+          controller: ModalScrollController.of(context),
+          child: DepositSheet(account: _account),
+    ));
+  }
+
 
   void _test() async{
 
@@ -104,7 +126,7 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 ElevatedButton(
                     onPressed: () {
-
+                        _receive();
                     },
                     child: const Text('Receive')
                 ),

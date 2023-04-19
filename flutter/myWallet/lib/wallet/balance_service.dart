@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:dio/dio.dart';
 import 'package:mywallet/wallet/network.dart';
 import 'package:mywallet/wallet/top_tokens.dart';
@@ -12,8 +14,9 @@ class BalanceService{
     Network network = NetworkUtil.instances[0];
 
     print('network : ${network.name}');
-
+    // https://goerli.etherscan.io/address/0x20fa9db25828191606c863225d0bc812c1c8f614
     var balancesContract = DeployedContract(ContractAbi.fromJson(abi, "BalanceUtil"), network.balanceUtilAddress);
+    // https://goerli.etherscan.io/address/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984#code
     var uniContract = DeployedContract(ContractAbi.fromJson(uniTokenAbi, "Uni"), EthereumAddress.fromHex("0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984"));
 
     List<dynamic> _balancesResult = [];
@@ -37,18 +40,9 @@ class BalanceService{
           function: uniContract.function("balanceOf"),
           params: [EthereumAddress.fromHex("0x5E46077F3DD9462D9F559FF38F76d54F762e79fF")]
           ).then((value) => _uniBalancesResult = value),
-
-      /*
-      curl -X 'GET' \
-      'https://api.coingecko.com/api/v3/simple/token_price/ethereum?
-      contract_addresses=0xdac17f958d2ee523a2206206994597c13d831ec7%2C0xB8c77482e45F1F44dE1745F52C74426C631bDD52%2C0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48%2C0xae7ab96520de3a18e5e111b5eaab095312d7fe84%2C0x2b591e99afe9f32eaa6214f7b7629768c40eeb39
-      &vs_currencies=eth' \
-      -H 'accept: application/json'
-      * */
-      // Dio().get("https://api.coingecko.com/api/v3/simple/token_price/ethereum?contract_addresses=$tokenAddresses&vs_currencies=eth").then((value) => response = value),
-      // 通过 API 查询 实时价格
+      //获取eth数量  https://www.coingecko.com/en/api/documentation
+      // 通过 API 查询 实时价格   https://min-api.cryptocompare.com/documentation?key=Price&cat=multipleSymbolsPriceEndpoint
       Dio().get("https://min-api.cryptocompare.com/data/pricemulti?fsyms=$tokenNames&tsyms=USD").then((value) => response = value)
-
     ]);
 
     print('all balance: ${_balancesResult.toString()}');
@@ -56,8 +50,9 @@ class BalanceService{
 
     print('response: ${response.data.toString()}');
     response.data["ETH"];
-
-    return "\$1381.02";
+    // 累加usd 的金额  得到最终价格   -- 因为我这号没钱  所以返回一个随机数了
+    var re = Random.secure().nextInt(1000);
+    return "\$$re";
   }
 }
 
