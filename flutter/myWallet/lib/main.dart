@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mywallet/wallet/account_utils.dart';
 import 'package:web3dart/crypto.dart';
 import 'package:mywallet/wallet/encrypted_signer.dart';
+import 'package:mywallet/wallet/balance_service.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,6 +36,7 @@ class _MyHomePageState extends State<MyHomePage> {
   var PWD = "12345678";
   late EncryptedSigner _account;
   late String _pk;
+  String balance = "\$0.00";
 
   void _createAccount() async{
     var signerSalt = bytesToHex(AccountUtils.randomBytes(16, secure: true));
@@ -48,6 +50,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _importAccount() async{
     String pk = await AccountUtils.importAccountByPK(_pk) ?? "" ;
+  }
+
+  void _getTotalBalance() async{
+    print('------_getTotalBalance--------');
+    balance  = await BalanceService.getTotalBalance(_account.publicAddress.hex);
+    setState(() {
+      balance;
+    });
   }
 
   void _test() async{
@@ -82,10 +92,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
                 child: const Text('import account')
             ),
-            const Text("\$0.00", style: TextStyle(fontSize: 30),),
+            Text(balance, style: const TextStyle(fontSize: 30),),
             ElevatedButton(
                 onPressed: () {
-                  _test();
+                  _getTotalBalance();
                 },
                 child: const Text('get account balance')
             ),
