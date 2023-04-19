@@ -11,7 +11,7 @@ class NetworkUtil{
           nativeCurrency: 'GoerliETH',
           chainId: BigInt.from(5),
           explorerUrl: 'https://goerli.etherscan.io',
-          balanceUtilAddress: EthereumAddress.fromHex("0x2b591e99afe9f32eaa6214f7b7629768c40eeb39"),
+          balanceUtilAddress: EthereumAddress.fromHex("0x20Fa9dB25828191606c863225d0Bc812C1c8F614"),
           client:Web3Client('https://eth-goerli.g.alchemy.com/v2/WCyU-o-7hTqY5YekFvNMoWhJhlFnpijc', Client())
           // client:Web3Client('https://goerli.infura.io/v3/', Client())
       ));
