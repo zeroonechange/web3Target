@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import 'package:mywallet/wallet/account_utils.dart';
+import 'package:mywallet/wallet/recent_activity.dart';
 import 'package:mywallet/wallet/swap_service.dart';
 import 'package:mywallet/widget/deposite_sheet.dart';
 import 'package:mywallet/widget/theme.dart';
@@ -95,11 +96,11 @@ class _MyHomePageState extends State<MyHomePage> {
   void _swap() async{
     print('------_swap--------');
     await SwapService.getSwapInfo();
-
   }
 
-  void _test() async{
-
+  void _fetchRecentActivity() async{
+    print('------_fetchRecentActivity--------');
+    await RecentActivity.fetch();
   }
 
   @override
@@ -162,7 +163,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             ElevatedButton(
                 onPressed: () {
-
+                  _fetchRecentActivity();
                 },
                 child: const Text('fetch Recent History')
             ),
