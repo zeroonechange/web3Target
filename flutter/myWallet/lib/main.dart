@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import 'package:mywallet/wallet/account_utils.dart';
+import 'package:mywallet/wallet/swap_service.dart';
 import 'package:mywallet/widget/deposite_sheet.dart';
 import 'package:mywallet/widget/theme.dart';
 import 'package:mywallet/widget/utils.dart';
@@ -91,6 +92,12 @@ class _MyHomePageState extends State<MyHomePage> {
     await BalanceService.sendETH(PWD, _account);
   }
 
+  void _swap() async{
+    print('------_swap--------');
+    await SwapService.getSwapInfo();
+
+  }
+
   void _test() async{
 
   }
@@ -147,7 +154,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 ElevatedButton(
                     onPressed: () {
-
+                      _swap();
                     },
                     child: const Text('Swap')
                 ),

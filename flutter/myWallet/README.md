@@ -4,6 +4,15 @@ a  wallet support ERC4337
 
 ## 大体架构
 ```c
+ controller 用于和本地数据库, 网络交互   service 和合约交互 
+ 页面根据模块来划分  再去细分 component   比安卓要简单多了 
+ 
+ 框架层面  核心是 和web3交互的 web3dart   http请求的dio  路由跳转get   数据库hive  
+          UI部分 千奇百怪的  又多又杂  
+```
+
+## 项目架构
+```c
 lib
     config			
         读取配置文件
