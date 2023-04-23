@@ -4,11 +4,12 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import 'package:mywallet/wallet/account_utils.dart';
 import 'package:mywallet/widget/deposite_sheet.dart';
+import 'package:mywallet/widget/theme.dart';
+import 'package:mywallet/widget/utils.dart';
 import 'package:web3dart/crypto.dart';
 import 'package:mywallet/wallet/encrypted_signer.dart';
 import 'package:mywallet/wallet/balance_service.dart';
 
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:get/get.dart';
 
 
@@ -51,16 +52,19 @@ class _MyHomePageState extends State<MyHomePage> {
     var signerSalt = bytesToHex(AccountUtils.randomBytes(16, secure: true));
     _account = await AccountUtils.createAccount(salt: signerSalt, password: PWD);
     print("address: ${_account.publicAddress}  encrypted privateKey: ${_account.encryptedPrivateKey}  salt: ${_account.salt}");
+    Utils.toast("succeed create account");
   }
 
   void _exportAccount() async{
     print('------_exportAccount--------');
     _pk = await AccountUtils.getPrivateKey(PWD, _account);
+    Utils.toast("succeed export account");
   }
 
   void _importAccount() async{
     print('------_importAccount--------');
     String pk = await AccountUtils.importAccountByPK(_pk) ?? "" ;
+    Utils.toast("succeed import account");
   }
 
   void _getTotalBalance() async{
@@ -69,6 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       balance;
     });
+    Utils.toast("succeed get account balance");
   }
 
   void _receive() async{
@@ -81,6 +86,10 @@ class _MyHomePageState extends State<MyHomePage> {
     ));
   }
 
+  void _send() async{
+    print('------_send--------');
+    await BalanceService.sendETH(PWD, _account);
+  }
 
   void _test() async{
 
@@ -132,7 +141,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 ElevatedButton(
                     onPressed: () {
-
+                        _send();
                     },
                     child: const Text('Send')
                 ),

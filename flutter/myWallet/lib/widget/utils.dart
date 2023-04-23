@@ -39,4 +39,13 @@ class Utils {
       align: Alignment.topCenter,
     );
   }
+
+  static toast(String txt){
+    BotToast.showText(
+      text:  txt ,
+      textStyle: TextStyle(fontFamily: AppThemes.fonts.gilroyBold, color: Colors.black),
+      contentColor: Get.theme.colorScheme.error,
+      align: Alignment.topCenter,
+    );
+  }
 }

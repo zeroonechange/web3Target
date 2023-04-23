@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:dio/dio.dart';
+import 'package:mywallet/wallet/account_utils.dart';
+import 'package:mywallet/wallet/encrypted_signer.dart';
 import 'package:mywallet/wallet/network.dart';
 import 'package:mywallet/wallet/top_tokens.dart';
 import 'package:web3dart/web3dart.dart';
@@ -53,6 +55,57 @@ class BalanceService{
     // 累加usd 的金额  得到最终价格   -- 因为我这号没钱  所以返回一个随机数了
     var re = Random.secure().nextInt(1000);
     return "\$$re";
+  }
+
+
+  static Future<String> sendETH(String password, EncryptedSigner account) async{
+    NetworkUtil.initialize();
+    Network network = NetworkUtil.instances[0];
+
+    var response;
+    var gasFee = 0;
+    // https://api-goerli.etherscan.io/
+    // https://api.etherscan.io/
+    await Dio().get("https://api.etherscan.io/api?module=gastracker&action=gasoracle&apikey=AX5NHJ2AMZGUWMM5AXQK43V318QW4YVFP9").then((value) =>
+      response = value
+    );
+
+    print(response);
+    gasFee = int.parse(response.data["result"]["SafeGasPrice"] as String);
+    print('gasFee: $gasFee');
+
+    // Unhandled Exception: RPCError: got code -32000 with msg "err:
+    // max fee per gas less than block base fee: address 0x6f7F3E0Ff3bd4e6eCC50d2Ee60c38D28070116bD, maxFeePerGas: 61 baseFee: 3157421 (supplied gas 275010499)".
+    var transaction = Transaction(
+        to: EthereumAddress.fromHex("0x5E46077F3DD9462D9F559FF38F76d54F762e79fF"),  // account 1
+        gasPrice: EtherAmount.inWei(BigInt.one),
+        maxGas: 100000,
+        value: EtherAmount.inWei(BigInt.from(100)),
+    );
+
+    var gasEstimate = await network.client.estimateGas(to: transaction.to, value: transaction.value, data: transaction.data);
+    print('gasEstimate=$gasEstimate');
+
+    var newTransaction  = Transaction(
+        to: transaction.to,  // account 1
+        gasPrice: transaction.gasPrice,
+        maxGas: gasEstimate.toInt(),
+        value: transaction.value,
+    );
+
+    // String pk = await AccountUtils.getPrivateKey(password, account);
+    String pk = "0x761827f85f6b5cf3eaf3c5a8a930309438eec7950ebe2994302492a84b2124ed";  // account 2
+    var credientials = EthPrivateKey.fromHex(pk);  // 私钥
+    var re = await network.client.sendTransaction(
+      credientials,
+      newTransaction,
+      fetchChainIdFromNetworkId: true,  // 加这俩个东西
+      chainId: null,
+    );
+    print('sendETH result: $re');
+    // 第一次  gas price: 1  maxGas: 100000    0x1e0b789ab7865608c2b9ed174748b0c912593c8e2f11395955e7334c8b5636cf
+    // 第二次  gas price 拿的是以太坊的  gas 预估是 goerli 测试网的  试一试看看    0x6da1bdccaeb1170def2238c572df0971a28e93d389b1b87f3e8aaa2a47aaa5cd
+    return re ?? "";
   }
 }
 
