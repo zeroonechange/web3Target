@@ -67,8 +67,7 @@ abstract contract BaseAccount is IAccount {
      *      If the account doesn't use time-range, it is enough to return SIG_VALIDATION_FAILED value (1) for signature failure.
      *      Note that the validation code cannot use block.timestamp (or block.number) directly.
      */
-    function _validateSignature(UserOperation calldata userOp, bytes32 userOpHash)
-    internal virtual returns (uint256 validationData);
+    function _validateSignature(UserOperation calldata userOp, bytes32 userOpHash) internal virtual returns (uint256 validationData);
 
     /**
      * validate the current nonce matches the UserOperation nonce.

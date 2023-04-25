@@ -18,7 +18,7 @@ import "../core/BasePaymaster.sol";
  * - Possible workarounds are either use a more complex paymaster scheme (e.g. the DepositPaymaster) or
  *   to whitelist the account and the called method ids.
  */
-contract TokenPaymaster is BasePaymaster, ERC20 {
+contract TokenPaymaster is BasePaymaster, ERC20 {  // 这个东西是一个ERC20的实现?  why?
 
     //calculated cost of the postOp
     uint256 constant public COST_OF_POST = 15000;
@@ -28,7 +28,7 @@ contract TokenPaymaster is BasePaymaster, ERC20 {
     constructor(address accountFactory, string memory _symbol, IEntryPoint _entryPoint) ERC20(_symbol, _symbol) BasePaymaster(_entryPoint) {
         theFactory = accountFactory;
         //make it non-empty
-        _mint(address(this), 1);
+        _mint(address(this), 1);  
 
         //owner is allowed to withdraw tokens from the paymaster's balance
         _approve(address(this), msg.sender, type(uint).max);
@@ -108,6 +108,7 @@ contract TokenPaymaster is BasePaymaster, ERC20 {
         address sender = abi.decode(context, (address));
         uint256 charge = getTokenValueOfEth(actualGasCost + COST_OF_POST);
         //actualGasCost is known to be no larger than the above requiredPreFund, so the transfer should succeed.
+        // 从EOA 账号转给 paymaster  等比例的 eth 费用  这个费率应该是走 swap的实时价格? 那边如何判断呢?  以太坊应该有个换算比例 
         _transfer(sender, address(this), charge);
     }
 }

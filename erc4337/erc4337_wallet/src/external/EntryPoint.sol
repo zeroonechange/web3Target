@@ -55,7 +55,8 @@ contract EntryPoint is IEntryPoint, StakeManager {
         uint256 preGas = gasleft();
         bytes memory context = getMemoryBytesFromOffset(opInfo.contextOffset);
 
-        try this.innerHandleOp(userOp.callData, opInfo, context) returns (uint256 _actualGasCost) {
+        try this.innerHandleOp(userOp.callData, opInfo, context) 
+        returns (uint256 _actualGasCost) {
             collected = _actualGasCost;
         } catch {
             uint256 actualGas = preGas - gasleft() + opInfo.preOpGas;
@@ -77,16 +78,16 @@ contract EntryPoint is IEntryPoint, StakeManager {
 
         unchecked {
             for (uint256 i = 0; i < opslen; i++) {
-                _validatePrepayment(i, ops[i], opInfos[i], address(0));
+                _validatePrepayment(i, ops[i], opInfos[i], address(0));   // 校验 verify
             }
 
             uint256 collected = 0;
 
             for (uint256 i = 0; i < opslen; i++) {
-                collected += _executeUserOp(i, ops[i], opInfos[i]);
+                collected += _executeUserOp(i, ops[i], opInfos[i]);      //  执行  execute 
             }
 
-            _compensate(beneficiary, collected);
+            _compensate(beneficiary, collected); // 退还多余的gas 费
         } //unchecked
     }
 
@@ -186,7 +187,7 @@ contract EntryPoint is IEntryPoint, StakeManager {
         }
 
         unchecked {
-            uint256 actualGas = preGas - gasleft() + opInfo.preOpGas;
+            uint256 actualGas = preGas - gasleft() + opInfo.preOpGas;   // 计算真实花了多少gas 
             //note: opIndex is ignored (relevant only if mode==postOpReverted, which is only possible outside of innerHandleOp)
             return _handlePostOp(0, mode, opInfo, context, actualGas);
         }
@@ -250,7 +251,8 @@ contract EntryPoint is IEntryPoint, StakeManager {
         unchecked {
             //when using a Paymaster, the verificationGasLimit is used also to as a limit for the postOp call.
             // our security model might call postOp eventually twice
-            uint256 mul = mUserOp.paymaster != address(0) ? 3 : 1;
+            uint256 mul = mUserOp.paymaster != address(0) ? 3 : 1;  // paymaster=3  none=1    postOp跑俩次 
+            // callGasLimit + verificationGasLimit*mul + preVerificationGas
             uint256 requiredGas = mUserOp.callGasLimit + mUserOp.verificationGasLimit * mul + mUserOp.preVerificationGas;
 
             // TODO: copy logic of gasPrice?
@@ -311,6 +313,8 @@ contract EntryPoint is IEntryPoint, StakeManager {
                 uint256 bal = balanceOf(sender);
                 missingAccountFunds = bal > requiredPrefund ? 0 : requiredPrefund - bal;
             }
+
+            // 账户合约 校验  
             try IAccount(sender).validateUserOp{gas: mUserOp.verificationGasLimit}(
                 op, opInfo.userOpHash, aggregator, missingAccountFunds
             ) returns (uint256 _deadline) {
@@ -324,7 +328,9 @@ contract EntryPoint is IEntryPoint, StakeManager {
             } catch {
                 revert FailedOp(opIndex, address(0), "");
             }
-            if (paymaster == address(0)) {
+
+
+            if (paymaster == address(0)) {   // EOA账号需要往 EP打钱完成gas支付  多余的部分可以提出来
                 DepositInfo storage senderInfo = deposits[sender];
                 uint256 deposit = senderInfo.deposit;
                 if (requiredPrefund > deposit) {
@@ -405,17 +411,17 @@ contract EntryPoint is IEntryPoint, StakeManager {
         require(maxGasValues <= type(uint120).max, "gas values overflow");
 
         uint256 gasUsedByValidateAccountPrepayment;
-        (uint256 requiredPreFund) = _getRequiredPrefund(mUserOp);
+        (uint256 requiredPreFund) = _getRequiredPrefund(mUserOp); // 计算要多少gas费用
         (gasUsedByValidateAccountPrepayment, actualAggregator, deadline) =
-            _validateAccountPrepayment(opIndex, userOp, outOpInfo, aggregator, requiredPreFund);
+            _validateAccountPrepayment(opIndex, userOp, outOpInfo, aggregator, requiredPreFund);  //账户合约 校验  -  在没paymaster下 计算要付多少gas 
         //a "marker" where account opcode validation is done and paymaster opcode validation is about to start
         // (used only by off-chain simulateValidation)
         numberMarker();
 
         bytes memory context;
-        if (mUserOp.paymaster != address(0)) {
+        if (mUserOp.paymaster != address(0)) {  // 有 paymaster下 
             uint256 paymasterDeadline;
-            (context, paymasterDeadline) = _validatePaymasterPrepayment(
+            (context, paymasterDeadline) = _validatePaymasterPrepayment( // paymaster校验
                 opIndex, userOp, outOpInfo, requiredPreFund, gasUsedByValidateAccountPrepayment
             );
             if (paymasterDeadline != 0 && paymasterDeadline < deadline) {
@@ -427,7 +433,7 @@ contract EntryPoint is IEntryPoint, StakeManager {
         unchecked {
             uint256 gasUsed = preGas - gasleft();
 
-            if (userOp.verificationGasLimit < gasUsed) {
+            if (userOp.verificationGasLimit < gasUsed) { // gas 不够 
                 revert FailedOp(opIndex, mUserOp.paymaster, "Used more than verificationGasLimit");
             }
             outOpInfo.prefund = requiredPreFund;
@@ -463,8 +469,8 @@ contract EntryPoint is IEntryPoint, StakeManager {
             address paymaster = mUserOp.paymaster;
             if (paymaster == address(0)) {
                 refundAddress = mUserOp.sender;
-            } else {
-                refundAddress = paymaster;
+            } else { 
+                refundAddress = paymaster;   // 退款地址
                 if (context.length > 0) {
                     actualGasCost = actualGas * gasPrice;
                     if (mode != IPaymaster.PostOpMode.postOpReverted) {
@@ -487,7 +493,7 @@ contract EntryPoint is IEntryPoint, StakeManager {
                 revert FailedOp(opIndex, paymaster, "prefund below actualGasCost");
             }
             uint256 refund = opInfo.prefund - actualGasCost;
-            internalIncrementDeposit(refundAddress, refund);
+            internalIncrementDeposit(refundAddress, refund);  // 更新记账 
             bool success = mode == IPaymaster.PostOpMode.opSucceeded;
             emit UserOperationEvent(
                 opInfo.userOpHash, mUserOp.sender, mUserOp.paymaster, mUserOp.nonce, actualGasCost, gasPrice, success
