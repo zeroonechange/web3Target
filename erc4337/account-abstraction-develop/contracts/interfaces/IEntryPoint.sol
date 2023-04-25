@@ -13,6 +13,12 @@ import "./UserOperation.sol";
 import "./IStakeManager.sol";
 import "./IAggregator.sol";
 
+// 核心逻辑 已经在各个链上实现了  已通过audit 审计  部署在 0x0576a174D229E3cFA37253523E645A78A0C91B57
+// bundler ->  entrypoint -> {aggrator, account contract, paymaster}
+// 方法 handleOps    校验 
+//      handleAggregatedOps   聚合器校验  
+//      simulateHandleOp     模拟  看签名是否符合 
+// 实现了  StakeManager  可以往里面存钱  用于支付 gas费  用不完还能提出来  
 interface IEntryPoint is IStakeManager {
 
     /***

@@ -17,6 +17,7 @@ pragma solidity ^0.8.12;
      * @param paymasterAndData if set, this field holds the paymaster address and paymaster-specific data. the paymaster will pay for the transaction instead of the sender.
      * @param signature sender-verified signature over the entire request, the EntryPoint address and the chain ID.
      */
+    // 结构类  
     struct UserOperation {
 
         address sender;
@@ -35,11 +36,13 @@ pragma solidity ^0.8.12;
 /**
  * Utility functions helpful when working with UserOperation structs.
  */
+// 工具类  这里写法很有意思  用汇编节省 gas  
 library UserOperationLib {
 
     function getSender(UserOperation calldata userOp) internal pure returns (address) {
         address data;
         //read sender from userOp, which is first userOp member (saves 800 gas...)
+        // calldata 是很廉价的 
         assembly {data := calldataload(userOp)}
         return address(uint160(data));
     }
@@ -67,7 +70,7 @@ library UserOperationLib {
         assembly {
             let ofs := userOp
             let len := sub(sub(sig.offset, ofs), 32)
-            ret := mload(0x40)
+            ret := mload(0x40) // 0x40 ~ 0x62  +32  
             mstore(0x40, add(ret, add(len, 32)))
             mstore(ret, len)
             calldatacopy(add(ret, 32), ofs, len)

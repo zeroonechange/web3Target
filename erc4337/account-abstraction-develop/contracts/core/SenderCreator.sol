@@ -5,6 +5,7 @@ pragma solidity ^0.8.12;
  * helper contract for EntryPoint, to call userOp.initCode from a "neutral" address,
  * which is explicitly not the entryPoint itself.
  */
+// 使用 op.initCode 去创建合约  AC  account contract 账户合约   其实是调用 factory里面的方法去创建的
 contract SenderCreator {
 
     /**

@@ -6,6 +6,7 @@ import "./UserOperation.sol";
 /**
  * Aggregated Signatures validator.
  */
+// 聚合器  校验签名的  尤其是钱包多签 - BLS 算法  这里有三个方法 
 interface IAggregator {
 
     /**

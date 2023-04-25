@@ -7,6 +7,7 @@ import "./UserOperation.sol";
  * the interface exposed by a paymaster contract, who agrees to pay the gas for user's operations.
  * a paymaster must hold a stake to cover the required entrypoint stake and also the gas for the transaction.
  */
+// 用于支付gas  不走EOA账号  或者 其他 token 也可以   根据 汇率打入 entrypoint 账号地址  
 interface IPaymaster {
 
     enum PostOpMode {

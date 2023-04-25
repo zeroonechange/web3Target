@@ -13,6 +13,10 @@ import "./Helpers.sol";
  * Helper class for creating a paymaster.
  * provides helper methods for staking.
  * validates that the postOp is called only by the entryPoint
+ * 
+ * 
+ *  1.加了校验   必须由 entrypoint 调用 
+ *  2.把 stakemanager 里面的方法  再封装在这里暴露出来   这样可以自由存取钱
  */
 abstract contract BasePaymaster is IPaymaster, Ownable {
 

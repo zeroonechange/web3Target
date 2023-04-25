@@ -14,6 +14,9 @@ import "./Helpers.sol";
  * this contract provides the basic logic for implementing the IAccount interface  - validateUserOp
  * specific account implementation should inherit it and provide the account-specific logic
  */
+// 实现了一部分的功能  
+//      1.加了校验  msg.sender == entrypoint 
+//      2.
 abstract contract BaseAccount is IAccount {
     using UserOperationLib for UserOperation;
 
@@ -37,14 +40,13 @@ abstract contract BaseAccount is IAccount {
      * Validate user's signature and nonce.
      * subclass doesn't need to override this method. Instead, it should override the specific internal validation methods.
      */
-    function validateUserOp(UserOperation calldata userOp, bytes32 userOpHash, uint256 missingAccountFunds)
-    external override virtual returns (uint256 validationData) {
+    function validateUserOp(UserOperation calldata userOp, bytes32 userOpHash, uint256 missingAccountFunds) external override virtual returns (uint256 validationData) {
         _requireFromEntryPoint();
         validationData = _validateSignature(userOp, userOpHash);
         if (userOp.initCode.length == 0) {
             _validateAndUpdateNonce(userOp);
         }
-        _payPrefund(missingAccountFunds);
+        _payPrefund(missingAccountFunds);  // 支付gas 给 ac账号合约 用于支付gas费
     }
 
     /**

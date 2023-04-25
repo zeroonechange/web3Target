@@ -10,6 +10,7 @@ import "../interfaces/IStakeManager.sol";
  * deposit is just a balance used to pay for UserOperations (either by a paymaster or an account)
  * stake is value locked for at least "unstakeDelay" by a paymaster.
  */
+// 质押管理  维护一张表  用于支付 gas
 abstract contract StakeManager is IStakeManager {
 
     /// maps paymaster to their deposits and stakes
@@ -32,7 +33,7 @@ abstract contract StakeManager is IStakeManager {
         return deposits[account].deposit;
     }
 
-    receive() external payable {
+    receive() external payable {  // 接收到以太后  直接存入账户 
         depositTo(msg.sender);
     }
 
