@@ -15,6 +15,7 @@ import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
  * - the paymaster checks a signature to agree to PAY for GAS.
  * - the account checks a signature to prove identity and account ownership.
  */
+// 
 contract VerifyingPaymaster is BasePaymaster {
 
     using ECDSA for bytes32;
@@ -76,10 +77,11 @@ contract VerifyingPaymaster is BasePaymaster {
      * paymasterAndData[20:84] : abi.encode(validUntil, validAfter)
      * paymasterAndData[84:] : signature
      */
+    // 校验签名  +   是否过期 
     function _validatePaymasterUserOp(UserOperation calldata userOp, bytes32 /*userOpHash*/, uint256 requiredPreFund)
     internal override returns (bytes memory context, uint256 validationData) {
         (requiredPreFund);
-
+        // paymasterAndData = [ address, validUntil, validAfter, signature ]
         (uint48 validUntil, uint48 validAfter, bytes calldata signature) = parsePaymasterAndData(userOp.paymasterAndData);
         //ECDSA library supports both 64 and 65-byte long signatures.
         // we only "require" it here so that the revert reason on invalid signature will be of "VerifyingPaymaster", and not "ECDSA"
@@ -88,7 +90,7 @@ contract VerifyingPaymaster is BasePaymaster {
         senderNonce[userOp.getSender()]++;
 
         //don't revert on signature failure: return SIG_VALIDATION_FAILED
-        if (verifyingSigner != ECDSA.recover(hash, signature)) {
+        if (verifyingSigner != ECDSA.recover(hash, signature)) {  // 这个 verifyingSigner 应该是 EOA 账号 
             return ("",_packValidationData(true,validUntil,validAfter));
         }
 
@@ -97,6 +99,7 @@ contract VerifyingPaymaster is BasePaymaster {
         return ("",_packValidationData(false,validUntil,validAfter));
     }
 
+    //解析 OP.paymasterAndData 数据  paymasterAndData = [ address, validUntil, validAfter, signature  ]
     function parsePaymasterAndData(bytes calldata paymasterAndData) public pure returns(uint48 validUntil, uint48 validAfter, bytes calldata signature) {
         (validUntil, validAfter) = abi.decode(paymasterAndData[VALID_TIMESTAMP_OFFSET:SIGNATURE_OFFSET],(uint48, uint48));
         signature = paymasterAndData[SIGNATURE_OFFSET:];

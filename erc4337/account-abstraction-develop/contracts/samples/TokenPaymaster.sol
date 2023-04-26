@@ -69,16 +69,17 @@ contract TokenPaymaster is BasePaymaster, ERC20 {  // 这个东西是一个ERC20
       * verify the sender has enough tokens.
       * (since the paymaster is also the token, there is no notion of "approval")
       */
+     // 这里也没做签名校验  只是算了下 gas 
     function _validatePaymasterUserOp(UserOperation calldata userOp, bytes32 /*userOpHash*/, uint256 requiredPreFund)
     internal view override returns (bytes memory context, uint256 validationData) {
-        uint256 tokenPrefund = getTokenValueOfEth(requiredPreFund);
+        uint256 tokenPrefund = getTokenValueOfEth(requiredPreFund);  // 这样计算并不准确
 
         // verificationGasLimit is dual-purposed, as gas limit for postOp. make sure it is high enough
         // make sure that verificationGasLimit is high enough to handle postOp
         require(userOp.verificationGasLimit > COST_OF_POST, "TokenPaymaster: gas too low for postOp");
 
         if (userOp.initCode.length != 0) {
-            _validateConstructor(userOp);
+            _validateConstructor(userOp);   // 
             require(balanceOf(userOp.sender) >= tokenPrefund, "TokenPaymaster: no balance (pre-create)");
         } else {
 
@@ -90,6 +91,7 @@ contract TokenPaymaster is BasePaymaster, ERC20 {  // 这个东西是一个ERC20
 
     // when constructing an account, validate constructor code and parameters
     // we trust our factory (and that it doesn't have any other public methods)
+    // 检查 factory 的地址是否准确
     function _validateConstructor(UserOperation calldata userOp) internal virtual view {
         address factory = address(bytes20(userOp.initCode[0 : 20]));
         require(factory == theFactory, "TokenPaymaster: wrong account factory");

@@ -40,10 +40,14 @@ contract BLSAccountFactory {
         if (codeSize > 0) {
             return BLSAccount(payable(addr));
         }
-        return BLSAccount(payable(new ERC1967Proxy{salt : bytes32(salt)}(
-                address(accountImplementation),
-                abi.encodeCall(BLSAccount.initialize, aPublicKey)
-            )));
+        return BLSAccount(  
+            payable(new ERC1967Proxy{salt : bytes32(salt)}
+                    (
+                        address(accountImplementation),
+                        abi.encodeCall(BLSAccount.initialize, aPublicKey)
+                    )
+                  )
+            );
     }
 
     /**

@@ -51,7 +51,7 @@ contract EIP4337Manager is IAccount, GnosisSafeStorage, Executor {
         bytes32 hash = userOpHash.toEthSignedMessageHash();
         address recovered = hash.recover(userOp.signature);
         require(threshold == 1, "account: only threshold 1");
-        if (!pThis.isOwner(recovered)) {
+        if (!pThis.isOwner(recovered)) {  // 不是 owner 
             validationData = SIG_VALIDATION_FAILED;
         }
 

@@ -18,6 +18,8 @@ import "./callback/TokenCallbackHandler.sol";
   *  has execute, eth handling methods
   *  has a single signer that can send requests through the entryPoint.
   */
+ // 大大的扩展了   可升级  利用 call 可任意执行方法  只需要部署好逻辑合约即可 
+ // 可以接收 ERC721   ERC777   ERC1155 等标准代币 
 contract SimpleAccount is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initializable {
     using ECDSA for bytes32;
 
@@ -65,6 +67,7 @@ contract SimpleAccount is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, In
     /**
      * execute a transaction (called directly from owner, or by entryPoint)
      */
+    // 执行一个方法
     function execute(address dest, uint256 value, bytes calldata func) external {
         _requireFromEntryPointOrOwner();
         _call(dest, value, func);
@@ -73,6 +76,7 @@ contract SimpleAccount is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, In
     /**
      * execute a sequence of transactions
      */
+    // 执行多个方法
     function executeBatch(address[] calldata dest, bytes[] calldata func) external {
         _requireFromEntryPointOrOwner();
         require(dest.length == func.length, "wrong array lengths");
@@ -106,10 +110,10 @@ contract SimpleAccount is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, In
     }
 
     /// implement template method of BaseAccount
-    function _validateSignature(UserOperation calldata userOp, bytes32 userOpHash)
-    internal override virtual returns (uint256 validationData) {
-        bytes32 hash = userOpHash.toEthSignedMessageHash();
-        if (owner != hash.recover(userOp.signature))
+    // 
+    function _validateSignature(UserOperation calldata userOp, bytes32 userOpHash) internal override virtual returns (uint256 validationData) {
+        bytes32 hash = userOpHash.toEthSignedMessageHash();   // keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n32", hash)) 
+        if (owner != hash.recover(userOp.signature))  // {ECDSA-recover} that receives the `v`  返回的就是地址 
             return SIG_VALIDATION_FAILED;
         return 0;
     }

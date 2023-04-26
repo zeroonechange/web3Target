@@ -23,6 +23,7 @@ import "./IOracle.sol";
  * It can only be used if it is "whitelisted" by the bundler.
  * (technically, it can be used by an "oracle" which returns a static value, without accessing any storage)
  */
+// 
 contract DepositPaymaster is BasePaymaster {
 
     using UserOperationLib for UserOperation;
@@ -125,18 +126,19 @@ contract DepositPaymaster is BasePaymaster {
      * Note that the sender's balance is not checked. If it fails to pay from its balance,
      * this deposit will be used to compensate the paymaster for the transaction.
      */
+    // 这里没有校验签名  知识计算了 gas 费   用其他token 外部预言机去算 
     function _validatePaymasterUserOp(UserOperation calldata userOp, bytes32 userOpHash, uint256 maxCost)
     internal view override returns (bytes memory context, uint256 validationData) {
 
         (userOpHash);
         // verificationGasLimit is dual-purposed, as gas limit for postOp. make sure it is high enough
         require(userOp.verificationGasLimit > COST_OF_POST, "DepositPaymaster: gas too low for postOp");
-
+        // paymasterAndData = [ address,  ]
         bytes calldata paymasterAndData = userOp.paymasterAndData;
         require(paymasterAndData.length == 20+20, "DepositPaymaster: paymasterAndData must specify token");
         IERC20 token = IERC20(address(bytes20(paymasterAndData[20:])));
         address account = userOp.getSender();
-        uint256 maxTokenCost = getTokenValueOfEth(token, maxCost);
+        uint256 maxTokenCost = getTokenValueOfEth(token, maxCost); // 需要引入外部预言机  按照token的价格换算成 eth 用来支付 gas 
         uint256 gasPriceUserOp = userOp.gasPrice();
         require(unlockBlock[account] == 0, "DepositPaymaster: deposit not locked");
         require(balances[token][account] >= maxTokenCost, "DepositPaymaster: deposit too low");

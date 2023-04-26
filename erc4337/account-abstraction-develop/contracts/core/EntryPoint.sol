@@ -124,7 +124,7 @@ contract EntryPoint is IEntryPoint, StakeManager {
      * @param opsPerAggregator the operations to execute, grouped by aggregator (or address(0) for no-aggregator accounts)
      * @param beneficiary the address to receive the fees
      */
-    // 聚合器校验 + 执行  比较复杂  
+    // 聚合器校验 + 执行    先聚合器校验 再ac校验  再paymaster校验  最后执行  最后打钱 
     function handleAggregatedOps(
         UserOpsPerAggregator[] calldata opsPerAggregator,
         address payable beneficiary
@@ -142,7 +142,7 @@ contract EntryPoint is IEntryPoint, StakeManager {
 
             if (address(aggregator) != address(0)) {
                 // solhint-disable-next-line no-empty-blocks
-                try aggregator.validateSignatures(ops, opa.signature) {}
+                try aggregator.validateSignatures(ops, opa.signature) {} //  聚合器签名校验 validate aggregated signature.
                 catch {
                     revert SignatureValidationFailed(address(aggregator));
                 }
@@ -152,7 +152,7 @@ contract EntryPoint is IEntryPoint, StakeManager {
         }
 
         UserOpInfo[] memory opInfos = new UserOpInfo[](totalOps);
-
+        // 下面的逻辑和 handleOps 类似 
         uint256 opIndex = 0;
         for (uint256 a = 0; a < opasLen; a++) {
             UserOpsPerAggregator calldata opa = opsPerAggregator[a];
@@ -191,17 +191,18 @@ contract EntryPoint is IEntryPoint, StakeManager {
     function simulateHandleOp(UserOperation calldata op, address target, bytes calldata targetCallData) external override {
 
         UserOpInfo memory opInfo;
-        _simulationOnlyValidations(op);
-        (uint256 validationData, uint256 paymasterValidationData) = _validatePrepayment(0, op, opInfo);
+        _simulationOnlyValidations(op);  // 检查ac合约有没有部署 检查 paymaster 合约是否部署
+        // 计算需要多少gas 费  常规检验  创建合约  ac校验  paymaster校验-钱够不够 
+        (uint256 validationData, uint256 paymasterValidationData) = _validatePrepayment(0, op, opInfo); 
         ValidationData memory data = _intersectTimeRange(validationData, paymasterValidationData);
 
         numberMarker();
-        uint256 paid = _executeUserOp(0, op, opInfo);
+        uint256 paid = _executeUserOp(0, op, opInfo);  // 执行 op 
         numberMarker();
         bool targetSuccess;
         bytes memory targetResult;
         if (target != address(0)) {
-            (targetSuccess, targetResult) = target.call(targetCallData);
+            (targetSuccess, targetResult) = target.call(targetCallData);  
         }
         revert ExecutionResult(opInfo.preOpGas, paid, data.validAfter, data.validUntil, targetSuccess, targetResult);
     }
@@ -232,7 +233,7 @@ contract EntryPoint is IEntryPoint, StakeManager {
      * inner function to handle a UserOperation.
      * Must be declared "external" to open a call context, but it can only be called by handleOps.
      */
-    //执行OP 
+    // 执行OP  调用 AC 里面的逻辑  
     function innerHandleOp(bytes memory callData, UserOpInfo memory opInfo, bytes calldata context) external returns (uint256 actualGasCost) {
         uint256 preGas = gasleft();
         require(msg.sender == address(this), "AA92 internal call only");
@@ -306,7 +307,8 @@ contract EntryPoint is IEntryPoint, StakeManager {
     function simulateValidation(UserOperation calldata userOp) external {
         UserOpInfo memory outOpInfo;
 
-        _simulationOnlyValidations(userOp);
+        _simulationOnlyValidations(userOp); // 检查ac合约有没有部署 检查 paymaster 合约是否部署
+        // 计算需要多少gas 费   paymaster 校验  钱够不够 
         (uint256 validationData, uint256 paymasterValidationData) = _validatePrepayment(0, userOp, outOpInfo);
         StakeInfo memory paymasterInfo = _getStakeInfo(outOpInfo.mUserOp.paymaster);
         StakeInfo memory senderInfo = _getStakeInfo(outOpInfo.mUserOp.sender);
@@ -367,7 +369,8 @@ contract EntryPoint is IEntryPoint, StakeManager {
     function getSenderAddress(bytes calldata initCode) public {
         revert SenderAddressResult(senderCreator.createSender(initCode));
     }
-
+    
+    // 检查ac合约有没有部署 检查 paymaster 合约是否部署
     function _simulationOnlyValidations(UserOperation calldata userOp) internal view {
         // solhint-disable-next-line no-empty-blocks
         try this._validateSenderAndPaymaster(userOp.initCode, userOp.sender, userOp.paymasterAndData) {}
@@ -382,6 +385,7 @@ contract EntryPoint is IEntryPoint, StakeManager {
     * Called only during simulation.
     * This function always reverts to prevent warm/cold storage differentiation in simulation vs execution.
     */
+   // 检查ac合约有没有部署 检查 paymaster 合约是否部署
     function _validateSenderAndPaymaster(bytes calldata initCode, address sender, bytes calldata paymasterAndData) external view {
         if (initCode.length == 0 && sender.code.length == 0) {
             // it would revert anyway. but give a meaningful message
@@ -480,7 +484,7 @@ contract EntryPoint is IEntryPoint, StakeManager {
     /**
      * revert if either account validationData or paymaster validationData is expired
      */
-    //  
+    // 拿到校验结果  看是否过期了
     function _validateAccountAndPaymasterValidationData(uint256 opIndex, uint256 validationData, uint256 paymasterValidationData, address expectedAggregator) internal view {
         (address aggregator, bool outOfTimeRange) = _getValidationData(validationData);
         if (expectedAggregator != aggregator) {
@@ -518,7 +522,7 @@ contract EntryPoint is IEntryPoint, StakeManager {
      * @param opIndex the index of this userOp into the "opInfos" array
      * @param userOp the userOp to validate
      */
-    // 
+    // 校验 paymaster 
     function _validatePrepayment(uint256 opIndex, UserOperation calldata userOp, UserOpInfo memory outOpInfo)
     private returns (uint256 validationData, uint256 paymasterValidationData) {
 

@@ -13,6 +13,7 @@ interface IAggregator {
      * validate aggregated signature.
      * revert if the aggregated signature does not match the given list of operations.
      */
+    // 校验多个 op 
     function validateSignatures(UserOperation[] calldata userOps, bytes calldata signature) external view;
 
     /**
@@ -23,6 +24,7 @@ interface IAggregator {
      * @return sigForUserOp the value to put into the signature field of the userOp when calling handleOps.
      *    (usually empty, unless account and aggregator support some kind of "multisig"
      */
+     // 校验一个 op 
     function validateUserOpSignature(UserOperation calldata userOp) external view returns (bytes memory sigForUserOp);
 
     /**
@@ -32,5 +34,6 @@ interface IAggregator {
      * @param userOps array of UserOperations to collect the signatures from.
      * @return aggregatedSignature the aggregated signature
      */
+    // 将多个 签名  转化成一个 
     function aggregateSignatures(UserOperation[] calldata userOps) external view returns (bytes memory aggregatedSignature);
 }

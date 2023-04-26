@@ -40,6 +40,7 @@ contract SimpleAccountFactory {
     /**
      * calculate the counterfactual address of this account as it would be returned by createAccount()
      */
+    // 通过地址和盐 可以算出合约的地址 
     function getAddress(address owner,uint256 salt) public view returns (address) {
         return Create2.computeAddress(bytes32(salt), keccak256(abi.encodePacked(
                 type(ERC1967Proxy).creationCode,
