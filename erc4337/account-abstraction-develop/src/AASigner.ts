@@ -25,7 +25,7 @@ export const debug = process.env.DEBUG != null
 
 /**
  * send a request using rpc.
- *
+ * 通过 RPC 发送一个 OP 
  * @param provider - rpc provider that supports "eth_sendUserOperation"
  */
 export function rpcUserOpSender (provider: ethers.providers.JsonRpcProvider, entryPointAddress: string): SendUserOp {

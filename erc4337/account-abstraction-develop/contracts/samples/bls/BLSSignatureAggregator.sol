@@ -24,6 +24,7 @@ contract BLSSignatureAggregator is IAggregator {
      *         normally public key will be queried from the deployed BLSAccount itself;
      *         the public key will be read from the 'initCode' if the account is not deployed yet;
      */
+    // 通过OP.initCode 拿到 publicKey 
     function getUserOpPublicKey(UserOperation memory userOp) public view returns (uint256[4] memory publicKey) {
         bytes memory initCode = userOp.initCode;
         if (initCode.length > 0) {
@@ -36,6 +37,7 @@ contract BLSSignatureAggregator is IAggregator {
     /**
      * return the trailing 4 words of input data
      */
+    // 输入= OP.initCode 
     function getTrailingPublicKey(bytes memory data) public pure returns (uint256[4] memory publicKey) {
         uint len = data.length;
         require(len > 32 * 4, "data too short for sig");
@@ -52,6 +54,7 @@ contract BLSSignatureAggregator is IAggregator {
     }
 
     /// @inheritdoc IAggregator
+    // // 校验多个OP
     function validateSignatures(UserOperation[] calldata userOps, bytes calldata signature)
     external view override {
         require(signature.length == 64, "BLS: invalid signature");
@@ -60,14 +63,14 @@ contract BLSSignatureAggregator is IAggregator {
         uint userOpsLen = userOps.length;
         uint256[4][] memory blsPublicKeys = new uint256[4][](userOpsLen);
         uint256[2][] memory messages = new uint256[2][](userOpsLen);
-        for (uint256 i = 0; i < userOpsLen; i++) {
+        for (uint256 i = 0; i < userOpsLen; i++) {   
 
             UserOperation memory userOp = userOps[i];
-            blsPublicKeys[i] = getUserOpPublicKey(userOp);
+            blsPublicKeys[i] = getUserOpPublicKey(userOp);  // 获取 公钥 
 
-            messages[i] = _userOpToMessage(userOp, _getPublicKeyHash(blsPublicKeys[i]));
+            messages[i] = _userOpToMessage(userOp, _getPublicKeyHash(blsPublicKeys[i])); // 消息 
         }
-        require(BLSOpen.verifyMultiple(blsSignature, blsPublicKeys, messages), "BLS: validateSignatures failed");
+        require(BLSOpen.verifyMultiple(blsSignature, blsPublicKeys, messages), "BLS: validateSignatures failed");  // 校验多个  
     }
 
     /**
@@ -125,13 +128,14 @@ contract BLSSignatureAggregator is IAggregator {
      * @return sigForUserOp the value to put into the signature field of the userOp when calling handleOps.
      *    (usually empty, unless account and aggregator support some kind of "multisig"
      */
+    // 校验一个OP 
     function validateUserOpSignature(UserOperation calldata userOp)
     external view returns (bytes memory sigForUserOp) {
         uint256[2] memory signature = abi.decode(userOp.signature, (uint256[2]));
         uint256[4] memory pubkey = getUserOpPublicKey(userOp);
         uint256[2] memory message = _userOpToMessage(userOp, _getPublicKeyHash(pubkey));
 
-        require(BLSOpen.verifySingle(signature, pubkey, message), "BLS: wrong sig");
+        require(BLSOpen.verifySingle(signature, pubkey, message), "BLS: wrong sig"); // 签名 - 公钥 - 消息 
         return "";
     }
 
@@ -143,6 +147,7 @@ contract BLSSignatureAggregator is IAggregator {
      * @param userOps array of UserOperations to collect the signatures from.
      * @return aggregatedSignature the aggregated signature
      */
+    // 将多个签名转化成一个 
     function aggregateSignatures(UserOperation[] calldata userOps) external pure returns (bytes memory aggregatedSignature) {
         BLSHelper.XY[] memory points = new BLSHelper.XY[](userOps.length);
         for (uint i = 0; i < points.length; i++) {
