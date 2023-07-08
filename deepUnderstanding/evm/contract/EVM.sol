@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+// https://jeancvllr.medium.com/solidity-tutorial-all-about-assembly-5acdfefde05c
+
 contract EVM {
     constructor() {
         
     }
-
-
 
     function f() public {
         assembly{
@@ -93,14 +93,14 @@ contract EVM {
         assembly{
             let x
             x := 4
-            let f := 7
-            let y := add(f, 3)
+            let ff := 7
+            let y := add(ff, 3)
             let z := add(keccak256(0x0, 0x20), div(slength, 32))
             let n 
             let aa := 0x123
             let bb := 42
             let cc := "hello world"
-            let dd := "hello world hello world hello world hello world"
+            let dssd := "hello world hello world hello world hello world"
         }
     }
 
