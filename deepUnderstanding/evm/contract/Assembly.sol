@@ -15,8 +15,7 @@ contract Assembly {
         assembly{
             let x := 2 
             let y := x 
-
-            
+            let sum := add(x, y)            
         }
     }
 
