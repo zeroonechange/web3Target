@@ -440,7 +440,7 @@ library BytesLib {
 
         assembly {
             let length := mload(_preBytes)
-
+            
             // if lengths don't match the arrays are not equal
             switch eq(length, mload(_postBytes))
             case 1 {
