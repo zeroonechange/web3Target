@@ -1,10 +1,10 @@
 /**
  *Submitted for verification at BscScan.com on 2022-07-27
-*/
+ */
 
 /**
  *Submitted for verification at BscScan.com on 2022-07-27
-*/
+ */
 
 // Dependency file: @openzeppelin/contracts/token/ERC20/IERC20.sol
 
@@ -33,7 +33,10 @@ interface IERC20 {
      *
      * Emits a {Transfer} event.
      */
-    function transfer(address recipient, uint256 amount) external returns (bool);
+    function transfer(
+        address recipient,
+        uint256 amount
+    ) external returns (bool);
 
     /**
      * @dev Returns the remaining number of tokens that `spender` will be
@@ -42,7 +45,10 @@ interface IERC20 {
      *
      * This value changes when {approve} or {transferFrom} are called.
      */
-    function allowance(address owner, address spender) external view returns (uint256);
+    function allowance(
+        address owner,
+        address spender
+    ) external view returns (uint256);
 
     /**
      * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.
@@ -87,12 +93,14 @@ interface IERC20 {
      * @dev Emitted when the allowance of a `spender` for an `owner` is set by
      * a call to {approve}. `value` is the new allowance.
      */
-    event Approval(address indexed owner, address indexed spender, uint256 value);
+    event Approval(
+        address indexed owner,
+        address indexed spender,
+        uint256 value
+    );
 }
 
-
 // Dependency file: @openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol
-
 
 // pragma solidity ^0.8.0;
 
@@ -120,9 +128,7 @@ interface IERC20Metadata is IERC20 {
     function decimals() external view returns (uint8);
 }
 
-
 // Dependency file: @openzeppelin/contracts/utils/Context.sol
-
 
 // pragma solidity ^0.8.0;
 
@@ -146,9 +152,7 @@ abstract contract Context {
     }
 }
 
-
 // Dependency file: @openzeppelin/contracts/token/ERC20/ERC20.sol
-
 
 // pragma solidity ^0.8.0;
 
@@ -247,7 +251,9 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
     /**
      * @dev See {IERC20-balanceOf}.
      */
-    function balanceOf(address account) public view virtual override returns (uint256) {
+    function balanceOf(
+        address account
+    ) public view virtual override returns (uint256) {
         return _balances[account];
     }
 
@@ -259,7 +265,10 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
      * - `recipient` cannot be the zero address.
      * - the caller must have a balance of at least `amount`.
      */
-    function transfer(address recipient, uint256 amount) public virtual override returns (bool) {
+    function transfer(
+        address recipient,
+        uint256 amount
+    ) public virtual override returns (bool) {
         _transfer(_msgSender(), recipient, amount);
         return true;
     }
@@ -267,7 +276,10 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
     /**
      * @dev See {IERC20-allowance}.
      */
-    function allowance(address owner, address spender) public view virtual override returns (uint256) {
+    function allowance(
+        address owner,
+        address spender
+    ) public view virtual override returns (uint256) {
         return _allowances[owner][spender];
     }
 
@@ -278,7 +290,10 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
      *
      * - `spender` cannot be the zero address.
      */
-    function approve(address spender, uint256 amount) public virtual override returns (bool) {
+    function approve(
+        address spender,
+        uint256 amount
+    ) public virtual override returns (bool) {
         _approve(_msgSender(), spender, amount);
         return true;
     }
@@ -304,7 +319,10 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
         _transfer(sender, recipient, amount);
 
         uint256 currentAllowance = _allowances[sender][_msgSender()];
-        require(currentAllowance >= amount, "ERC20: transfer amount exceeds allowance");
+        require(
+            currentAllowance >= amount,
+            "ERC20: transfer amount exceeds allowance"
+        );
         unchecked {
             _approve(sender, _msgSender(), currentAllowance - amount);
         }
@@ -324,8 +342,15 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
      *
      * - `spender` cannot be the zero address.
      */
-    function increaseAllowance(address spender, uint256 addedValue) public virtual returns (bool) {
-        _approve(_msgSender(), spender, _allowances[_msgSender()][spender] + addedValue);
+    function increaseAllowance(
+        address spender,
+        uint256 addedValue
+    ) public virtual returns (bool) {
+        _approve(
+            _msgSender(),
+            spender,
+            _allowances[_msgSender()][spender] + addedValue
+        );
         return true;
     }
 
@@ -343,9 +368,15 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
      * - `spender` must have allowance for the caller of at least
      * `subtractedValue`.
      */
-    function decreaseAllowance(address spender, uint256 subtractedValue) public virtual returns (bool) {
+    function decreaseAllowance(
+        address spender,
+        uint256 subtractedValue
+    ) public virtual returns (bool) {
         uint256 currentAllowance = _allowances[_msgSender()][spender];
-        require(currentAllowance >= subtractedValue, "ERC20: decreased allowance below zero");
+        require(
+            currentAllowance >= subtractedValue,
+            "ERC20: decreased allowance below zero"
+        );
         unchecked {
             _approve(_msgSender(), spender, currentAllowance - subtractedValue);
         }
@@ -378,7 +409,10 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
         _beforeTokenTransfer(sender, recipient, amount);
 
         uint256 senderBalance = _balances[sender];
-        require(senderBalance >= amount, "ERC20: transfer amount exceeds balance");
+        require(
+            senderBalance >= amount,
+            "ERC20: transfer amount exceeds balance"
+        );
         unchecked {
             _balances[sender] = senderBalance - amount;
         }
@@ -504,9 +538,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
     ) internal virtual {}
 }
 
-
 // Dependency file: @openzeppelin/contracts/access/Ownable.sol
-
 
 // pragma solidity ^0.8.0;
 
@@ -527,7 +559,10 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
 abstract contract Ownable is Context {
     address private _owner;
 
-    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+    event OwnershipTransferred(
+        address indexed previousOwner,
+        address indexed newOwner
+    );
 
     /**
      * @dev Initializes the contract setting the deployer as the initial owner.
@@ -567,7 +602,10 @@ abstract contract Ownable is Context {
      * Can only be called by the current owner.
      */
     function transferOwnership(address newOwner) public virtual onlyOwner {
-        require(newOwner != address(0), "Ownable: new owner is the zero address");
+        require(
+            newOwner != address(0),
+            "Ownable: new owner is the zero address"
+        );
         _setOwner(newOwner);
     }
 
@@ -578,9 +616,7 @@ abstract contract Ownable is Context {
     }
 }
 
-
 // Dependency file: @openzeppelin/contracts/utils/math/SafeMath.sol
-
 
 // pragma solidity ^0.8.0;
 
@@ -600,7 +636,10 @@ library SafeMath {
      *
      * _Available since v3.4._
      */
-    function tryAdd(uint256 a, uint256 b) internal pure returns (bool, uint256) {
+    function tryAdd(
+        uint256 a,
+        uint256 b
+    ) internal pure returns (bool, uint256) {
         unchecked {
             uint256 c = a + b;
             if (c < a) return (false, 0);
@@ -613,7 +652,10 @@ library SafeMath {
      *
      * _Available since v3.4._
      */
-    function trySub(uint256 a, uint256 b) internal pure returns (bool, uint256) {
+    function trySub(
+        uint256 a,
+        uint256 b
+    ) internal pure returns (bool, uint256) {
         unchecked {
             if (b > a) return (false, 0);
             return (true, a - b);
@@ -625,7 +667,10 @@ library SafeMath {
      *
      * _Available since v3.4._
      */
-    function tryMul(uint256 a, uint256 b) internal pure returns (bool, uint256) {
+    function tryMul(
+        uint256 a,
+        uint256 b
+    ) internal pure returns (bool, uint256) {
         unchecked {
             // Gas optimization: this is cheaper than requiring 'a' not being zero, but the
             // benefit is lost if 'b' is also tested.
@@ -642,7 +687,10 @@ library SafeMath {
      *
      * _Available since v3.4._
      */
-    function tryDiv(uint256 a, uint256 b) internal pure returns (bool, uint256) {
+    function tryDiv(
+        uint256 a,
+        uint256 b
+    ) internal pure returns (bool, uint256) {
         unchecked {
             if (b == 0) return (false, 0);
             return (true, a / b);
@@ -654,7 +702,10 @@ library SafeMath {
      *
      * _Available since v3.4._
      */
-    function tryMod(uint256 a, uint256 b) internal pure returns (bool, uint256) {
+    function tryMod(
+        uint256 a,
+        uint256 b
+    ) internal pure returns (bool, uint256) {
         unchecked {
             if (b == 0) return (false, 0);
             return (true, a % b);
@@ -807,9 +858,7 @@ library SafeMath {
     }
 }
 
-
 // Dependency file: @openzeppelin/contracts/proxy/Clones.sol
-
 
 // pragma solidity ^0.8.0;
 
@@ -835,9 +884,15 @@ library Clones {
     function clone(address implementation) internal returns (address instance) {
         assembly {
             let ptr := mload(0x40)
-            mstore(ptr, 0x3d602d80600a3d3981f3363d3d373d3d3d363d73000000000000000000000000)
+            mstore(
+                ptr,
+                0x3d602d80600a3d3981f3363d3d373d3d3d363d73000000000000000000000000
+            )
             mstore(add(ptr, 0x14), shl(0x60, implementation))
-            mstore(add(ptr, 0x28), 0x5af43d82803e903d91602b57fd5bf30000000000000000000000000000000000)
+            mstore(
+                add(ptr, 0x28),
+                0x5af43d82803e903d91602b57fd5bf30000000000000000000000000000000000
+            )
             instance := create(0, ptr, 0x37)
         }
         require(instance != address(0), "ERC1167: create failed");
@@ -850,12 +905,21 @@ library Clones {
      * the clone. Using the same `implementation` and `salt` multiple time will revert, since
      * the clones cannot be deployed twice at the same address.
      */
-    function cloneDeterministic(address implementation, bytes32 salt) internal returns (address instance) {
+    function cloneDeterministic(
+        address implementation,
+        bytes32 salt
+    ) internal returns (address instance) {
         assembly {
             let ptr := mload(0x40)
-            mstore(ptr, 0x3d602d80600a3d3981f3363d3d373d3d3d363d73000000000000000000000000)
+            mstore(
+                ptr,
+                0x3d602d80600a3d3981f3363d3d373d3d3d363d73000000000000000000000000
+            )
             mstore(add(ptr, 0x14), shl(0x60, implementation))
-            mstore(add(ptr, 0x28), 0x5af43d82803e903d91602b57fd5bf30000000000000000000000000000000000)
+            mstore(
+                add(ptr, 0x28),
+                0x5af43d82803e903d91602b57fd5bf30000000000000000000000000000000000
+            )
             instance := create2(0, ptr, 0x37, salt)
         }
         require(instance != address(0), "ERC1167: create2 failed");
@@ -871,9 +935,15 @@ library Clones {
     ) internal pure returns (address predicted) {
         assembly {
             let ptr := mload(0x40)
-            mstore(ptr, 0x3d602d80600a3d3981f3363d3d373d3d3d363d73000000000000000000000000)
+            mstore(
+                ptr,
+                0x3d602d80600a3d3981f3363d3d373d3d3d363d73000000000000000000000000
+            )
             mstore(add(ptr, 0x14), shl(0x60, implementation))
-            mstore(add(ptr, 0x28), 0x5af43d82803e903d91602b57fd5bf3ff00000000000000000000000000000000)
+            mstore(
+                add(ptr, 0x28),
+                0x5af43d82803e903d91602b57fd5bf3ff00000000000000000000000000000000
+            )
             mstore(add(ptr, 0x38), shl(0x60, deployer))
             mstore(add(ptr, 0x4c), salt)
             mstore(add(ptr, 0x6c), keccak256(ptr, 0x37))
@@ -884,15 +954,13 @@ library Clones {
     /**
      * @dev Computes the address of a clone deployed using {Clones-cloneDeterministic}.
      */
-    function predictDeterministicAddress(address implementation, bytes32 salt)
-        internal
-        view
-        returns (address predicted)
-    {
+    function predictDeterministicAddress(
+        address implementation,
+        bytes32 salt
+    ) internal view returns (address predicted) {
         return predictDeterministicAddress(implementation, salt, address(this));
     }
 }
-
 
 // Dependency file: contracts/interfaces/IUniswapV2Factory.sol
 
@@ -910,24 +978,24 @@ interface IUniswapV2Factory {
 
     function feeToSetter() external view returns (address);
 
-    function getPair(address tokenA, address tokenB)
-        external
-        view
-        returns (address pair);
+    function getPair(
+        address tokenA,
+        address tokenB
+    ) external view returns (address pair);
 
     function allPairs(uint256) external view returns (address pair);
 
     function allPairsLength() external view returns (uint256);
 
-    function createPair(address tokenA, address tokenB)
-        external
-        returns (address pair);
+    function createPair(
+        address tokenA,
+        address tokenB
+    ) external returns (address pair);
 
     function setFeeTo(address) external;
 
     function setFeeToSetter(address) external;
 }
-
 
 // Dependency file: contracts/interfaces/IUniswapV2Router02.sol
 
@@ -947,13 +1015,7 @@ interface IUniswapV2Router01 {
         uint256 amountBMin,
         address to,
         uint256 deadline
-    )
-        external
-        returns (
-            uint256 amountA,
-            uint256 amountB,
-            uint256 liquidity
-        );
+    ) external returns (uint256 amountA, uint256 amountB, uint256 liquidity);
 
     function addLiquidityETH(
         address token,
@@ -965,11 +1027,7 @@ interface IUniswapV2Router01 {
     )
         external
         payable
-        returns (
-            uint256 amountToken,
-            uint256 amountETH,
-            uint256 liquidity
-        );
+        returns (uint256 amountToken, uint256 amountETH, uint256 liquidity);
 
     function removeLiquidity(
         address tokenA,
@@ -1081,15 +1139,15 @@ interface IUniswapV2Router01 {
         uint256 reserveOut
     ) external pure returns (uint256 amountIn);
 
-    function getAmountsOut(uint256 amountIn, address[] calldata path)
-        external
-        view
-        returns (uint256[] memory amounts);
+    function getAmountsOut(
+        uint256 amountIn,
+        address[] calldata path
+    ) external view returns (uint256[] memory amounts);
 
-    function getAmountsIn(uint256 amountOut, address[] calldata path)
-        external
-        view
-        returns (uint256[] memory amounts);
+    function getAmountsIn(
+        uint256 amountOut,
+        address[] calldata path
+    ) external view returns (uint256[] memory amounts);
 }
 
 interface IUniswapV2Router02 is IUniswapV2Router01 {
@@ -1139,9 +1197,7 @@ interface IUniswapV2Router02 is IUniswapV2Router01 {
     ) external;
 }
 
-
 // Dependency file: @openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol
-
 
 // pragma solidity ^0.8.0;
 
@@ -1166,7 +1222,10 @@ interface IERC20Upgradeable {
      *
      * Emits a {Transfer} event.
      */
-    function transfer(address recipient, uint256 amount) external returns (bool);
+    function transfer(
+        address recipient,
+        uint256 amount
+    ) external returns (bool);
 
     /**
      * @dev Returns the remaining number of tokens that `spender` will be
@@ -1175,7 +1234,10 @@ interface IERC20Upgradeable {
      *
      * This value changes when {approve} or {transferFrom} are called.
      */
-    function allowance(address owner, address spender) external view returns (uint256);
+    function allowance(
+        address owner,
+        address spender
+    ) external view returns (uint256);
 
     /**
      * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.
@@ -1220,12 +1282,14 @@ interface IERC20Upgradeable {
      * @dev Emitted when the allowance of a `spender` for an `owner` is set by
      * a call to {approve}. `value` is the new allowance.
      */
-    event Approval(address indexed owner, address indexed spender, uint256 value);
+    event Approval(
+        address indexed owner,
+        address indexed spender,
+        uint256 value
+    );
 }
 
-
 // Dependency file: @openzeppelin/contracts-upgradeable/token/ERC20/extensions/IERC20MetadataUpgradeable.sol
-
 
 // pragma solidity ^0.8.0;
 
@@ -1253,9 +1317,7 @@ interface IERC20MetadataUpgradeable is IERC20Upgradeable {
     function decimals() external view returns (uint8);
 }
 
-
 // Dependency file: @openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol
-
 
 // pragma solidity ^0.8.0;
 
@@ -1286,7 +1348,10 @@ abstract contract Initializable {
      * @dev Modifier to protect an initializer function from being invoked twice.
      */
     modifier initializer() {
-        require(_initializing || !_initialized, "Initializable: contract is already initialized");
+        require(
+            _initializing || !_initialized,
+            "Initializable: contract is already initialized"
+        );
 
         bool isTopLevelCall = !_initializing;
         if (isTopLevelCall) {
@@ -1302,9 +1367,7 @@ abstract contract Initializable {
     }
 }
 
-
 // Dependency file: @openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol
-
 
 // pragma solidity ^0.8.0;
 // import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
@@ -1324,8 +1387,8 @@ abstract contract ContextUpgradeable is Initializable {
         __Context_init_unchained();
     }
 
-    function __Context_init_unchained() internal initializer {
-    }
+    function __Context_init_unchained() internal initializer {}
+
     function _msgSender() internal view virtual returns (address) {
         return msg.sender;
     }
@@ -1333,12 +1396,11 @@ abstract contract ContextUpgradeable is Initializable {
     function _msgData() internal view virtual returns (bytes calldata) {
         return msg.data;
     }
+
     uint256[50] private __gap;
 }
 
-
 // Dependency file: @openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol
-
 
 // pragma solidity ^0.8.0;
 
@@ -1372,7 +1434,12 @@ abstract contract ContextUpgradeable is Initializable {
  * functions have been added to mitigate the well-known issues around setting
  * allowances. See {IERC20-approve}.
  */
-contract ERC20Upgradeable is Initializable, ContextUpgradeable, IERC20Upgradeable, IERC20MetadataUpgradeable {
+contract ERC20Upgradeable is
+    Initializable,
+    ContextUpgradeable,
+    IERC20Upgradeable,
+    IERC20MetadataUpgradeable
+{
     mapping(address => uint256) private _balances;
 
     mapping(address => mapping(address => uint256)) private _allowances;
@@ -1391,12 +1458,18 @@ contract ERC20Upgradeable is Initializable, ContextUpgradeable, IERC20Upgradeabl
      * All two of these values are immutable: they can only be set once during
      * construction.
      */
-    function __ERC20_init(string memory name_, string memory symbol_) internal initializer {
+    function __ERC20_init(
+        string memory name_,
+        string memory symbol_
+    ) internal initializer {
         __Context_init_unchained();
         __ERC20_init_unchained(name_, symbol_);
     }
 
-    function __ERC20_init_unchained(string memory name_, string memory symbol_) internal initializer {
+    function __ERC20_init_unchained(
+        string memory name_,
+        string memory symbol_
+    ) internal initializer {
         _name = name_;
         _symbol = symbol_;
     }
@@ -1443,7 +1516,9 @@ contract ERC20Upgradeable is Initializable, ContextUpgradeable, IERC20Upgradeabl
     /**
      * @dev See {IERC20-balanceOf}.
      */
-    function balanceOf(address account) public view virtual override returns (uint256) {
+    function balanceOf(
+        address account
+    ) public view virtual override returns (uint256) {
         return _balances[account];
     }
 
@@ -1455,7 +1530,10 @@ contract ERC20Upgradeable is Initializable, ContextUpgradeable, IERC20Upgradeabl
      * - `recipient` cannot be the zero address.
      * - the caller must have a balance of at least `amount`.
      */
-    function transfer(address recipient, uint256 amount) public virtual override returns (bool) {
+    function transfer(
+        address recipient,
+        uint256 amount
+    ) public virtual override returns (bool) {
         _transfer(_msgSender(), recipient, amount);
         return true;
     }
@@ -1463,7 +1541,10 @@ contract ERC20Upgradeable is Initializable, ContextUpgradeable, IERC20Upgradeabl
     /**
      * @dev See {IERC20-allowance}.
      */
-    function allowance(address owner, address spender) public view virtual override returns (uint256) {
+    function allowance(
+        address owner,
+        address spender
+    ) public view virtual override returns (uint256) {
         return _allowances[owner][spender];
     }
 
@@ -1474,7 +1555,10 @@ contract ERC20Upgradeable is Initializable, ContextUpgradeable, IERC20Upgradeabl
      *
      * - `spender` cannot be the zero address.
      */
-    function approve(address spender, uint256 amount) public virtual override returns (bool) {
+    function approve(
+        address spender,
+        uint256 amount
+    ) public virtual override returns (bool) {
         _approve(_msgSender(), spender, amount);
         return true;
     }
@@ -1500,7 +1584,10 @@ contract ERC20Upgradeable is Initializable, ContextUpgradeable, IERC20Upgradeabl
         _transfer(sender, recipient, amount);
 
         uint256 currentAllowance = _allowances[sender][_msgSender()];
-        require(currentAllowance >= amount, "ERC20: transfer amount exceeds allowance");
+        require(
+            currentAllowance >= amount,
+            "ERC20: transfer amount exceeds allowance"
+        );
         unchecked {
             _approve(sender, _msgSender(), currentAllowance - amount);
         }
@@ -1520,8 +1607,15 @@ contract ERC20Upgradeable is Initializable, ContextUpgradeable, IERC20Upgradeabl
      *
      * - `spender` cannot be the zero address.
      */
-    function increaseAllowance(address spender, uint256 addedValue) public virtual returns (bool) {
-        _approve(_msgSender(), spender, _allowances[_msgSender()][spender] + addedValue);
+    function increaseAllowance(
+        address spender,
+        uint256 addedValue
+    ) public virtual returns (bool) {
+        _approve(
+            _msgSender(),
+            spender,
+            _allowances[_msgSender()][spender] + addedValue
+        );
         return true;
     }
 
@@ -1539,9 +1633,15 @@ contract ERC20Upgradeable is Initializable, ContextUpgradeable, IERC20Upgradeabl
      * - `spender` must have allowance for the caller of at least
      * `subtractedValue`.
      */
-    function decreaseAllowance(address spender, uint256 subtractedValue) public virtual returns (bool) {
+    function decreaseAllowance(
+        address spender,
+        uint256 subtractedValue
+    ) public virtual returns (bool) {
         uint256 currentAllowance = _allowances[_msgSender()][spender];
-        require(currentAllowance >= subtractedValue, "ERC20: decreased allowance below zero");
+        require(
+            currentAllowance >= subtractedValue,
+            "ERC20: decreased allowance below zero"
+        );
         unchecked {
             _approve(_msgSender(), spender, currentAllowance - subtractedValue);
         }
@@ -1574,7 +1674,10 @@ contract ERC20Upgradeable is Initializable, ContextUpgradeable, IERC20Upgradeabl
         _beforeTokenTransfer(sender, recipient, amount);
 
         uint256 senderBalance = _balances[sender];
-        require(senderBalance >= amount, "ERC20: transfer amount exceeds balance");
+        require(
+            senderBalance >= amount,
+            "ERC20: transfer amount exceeds balance"
+        );
         unchecked {
             _balances[sender] = senderBalance - amount;
         }
@@ -1698,12 +1801,11 @@ contract ERC20Upgradeable is Initializable, ContextUpgradeable, IERC20Upgradeabl
         address to,
         uint256 amount
     ) internal virtual {}
+
     uint256[45] private __gap;
 }
 
-
 // Dependency file: @openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol
-
 
 // pragma solidity ^0.8.0;
 
@@ -1725,7 +1827,10 @@ contract ERC20Upgradeable is Initializable, ContextUpgradeable, IERC20Upgradeabl
 abstract contract OwnableUpgradeable is Initializable, ContextUpgradeable {
     address private _owner;
 
-    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+    event OwnershipTransferred(
+        address indexed previousOwner,
+        address indexed newOwner
+    );
 
     /**
      * @dev Initializes the contract setting the deployer as the initial owner.
@@ -1770,7 +1875,10 @@ abstract contract OwnableUpgradeable is Initializable, ContextUpgradeable {
      * Can only be called by the current owner.
      */
     function transferOwnership(address newOwner) public virtual onlyOwner {
-        require(newOwner != address(0), "Ownable: new owner is the zero address");
+        require(
+            newOwner != address(0),
+            "Ownable: new owner is the zero address"
+        );
         _setOwner(newOwner);
     }
 
@@ -1779,9 +1887,9 @@ abstract contract OwnableUpgradeable is Initializable, ContextUpgradeable {
         _owner = newOwner;
         emit OwnershipTransferred(oldOwner, newOwner);
     }
+
     uint256[49] private __gap;
 }
-
 
 // Dependency file: contracts/interfaces/IUniswapV2Pair.sol
 
@@ -1792,24 +1900,53 @@ interface IUniswapV2Pair {
     event Transfer(address indexed from, address indexed to, uint value);
 
     function name() external pure returns (string memory);
+
     function symbol() external pure returns (string memory);
+
     function decimals() external pure returns (uint8);
+
     function totalSupply() external view returns (uint);
+
     function balanceOf(address owner) external view returns (uint);
-    function allowance(address owner, address spender) external view returns (uint);
+
+    function allowance(
+        address owner,
+        address spender
+    ) external view returns (uint);
 
     function approve(address spender, uint value) external returns (bool);
+
     function transfer(address to, uint value) external returns (bool);
-    function transferFrom(address from, address to, uint value) external returns (bool);
+
+    function transferFrom(
+        address from,
+        address to,
+        uint value
+    ) external returns (bool);
 
     function DOMAIN_SEPARATOR() external view returns (bytes32);
+
     function PERMIT_TYPEHASH() external pure returns (bytes32);
+
     function nonces(address owner) external view returns (uint);
 
-    function permit(address owner, address spender, uint value, uint deadline, uint8 v, bytes32 r, bytes32 s) external;
+    function permit(
+        address owner,
+        address spender,
+        uint value,
+        uint deadline,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) external;
 
     event Mint(address indexed sender, uint amount0, uint amount1);
-    event Burn(address indexed sender, uint amount0, uint amount1, address indexed to);
+    event Burn(
+        address indexed sender,
+        uint amount0,
+        uint amount1,
+        address indexed to
+    );
     event Swap(
         address indexed sender,
         uint amount0In,
@@ -1821,18 +1958,37 @@ interface IUniswapV2Pair {
     event Sync(uint112 reserve0, uint112 reserve1);
 
     function MINIMUM_LIQUIDITY() external pure returns (uint);
+
     function factory() external view returns (address);
+
     function token0() external view returns (address);
+
     function token1() external view returns (address);
-    function getReserves() external view returns (uint112 reserve0, uint112 reserve1, uint32 blockTimestampLast);
+
+    function getReserves()
+        external
+        view
+        returns (uint112 reserve0, uint112 reserve1, uint32 blockTimestampLast);
+
     function price0CumulativeLast() external view returns (uint);
+
     function price1CumulativeLast() external view returns (uint);
+
     function kLast() external view returns (uint);
 
     function mint(address to) external returns (uint liquidity);
+
     function burn(address to) external returns (uint amount0, uint amount1);
-    function swap(uint amount0Out, uint amount1Out, address to, bytes calldata data) external;
+
+    function swap(
+        uint amount0Out,
+        uint amount1Out,
+        address to,
+        bytes calldata data
+    ) external;
+
     function skim(address to) external;
+
     function sync() external;
 
     function initialize(address, address) external;
@@ -1905,7 +2061,6 @@ library SafeMathInt {
     }
 }
 
-
 // Dependency file: contracts/libs/SafeMathUint.sol
 
 // pragma solidity =0.8.4;
@@ -1921,7 +2076,6 @@ library SafeMathUint {
         return b;
     }
 }
-
 
 // Dependency file: contracts/baby/IterableMapping.sol
 
@@ -1940,22 +2094,20 @@ library IterableMapping {
         return map.values[key];
     }
 
-    function getIndexOfKey(Map storage map, address key)
-        public
-        view
-        returns (int256)
-    {
+    function getIndexOfKey(
+        Map storage map,
+        address key
+    ) public view returns (int256) {
         if (!map.inserted[key]) {
             return -1;
         }
         return int256(map.indexOf[key]);
     }
 
-    function getKeyAtIndex(Map storage map, uint256 index)
-        public
-        view
-        returns (address)
-    {
+    function getKeyAtIndex(
+        Map storage map,
+        uint256 index
+    ) public view returns (address) {
         return map.keys[index];
     }
 
@@ -1963,11 +2115,7 @@ library IterableMapping {
         return map.keys.length;
     }
 
-    function set(
-        Map storage map,
-        address key,
-        uint256 val
-    ) public {
+    function set(Map storage map, address key, uint256 val) public {
         if (map.inserted[key]) {
             map.values[key] = val;
         } else {
@@ -1997,7 +2145,6 @@ library IterableMapping {
         map.keys.pop();
     }
 }
-
 
 // Dependency file: contracts/baby/BabyTokenDividendTracker.sol
 
@@ -2048,27 +2195,24 @@ interface DividendPayingTokenOptionalInterface {
     /// @notice View the amount of dividend in wei that an address can withdraw.
     /// @param _owner The address of a token holder.
     /// @return The amount of dividend in wei that `_owner` can withdraw.
-    function withdrawableDividendOf(address _owner)
-        external
-        view
-        returns (uint256);
+    function withdrawableDividendOf(
+        address _owner
+    ) external view returns (uint256);
 
     /// @notice View the amount of dividend in wei that an address has withdrawn.
     /// @param _owner The address of a token holder.
     /// @return The amount of dividend in wei that `_owner` has withdrawn.
-    function withdrawnDividendOf(address _owner)
-        external
-        view
-        returns (uint256);
+    function withdrawnDividendOf(
+        address _owner
+    ) external view returns (uint256);
 
     /// @notice View the amount of dividend in wei that an address has earned in total.
     /// @dev accumulativeDividendOf(_owner) = withdrawableDividendOf(_owner) + withdrawnDividendOf(_owner)
     /// @param _owner The address of a token holder.
     /// @return The amount of dividend in wei that `_owner` has earned in total.
-    function accumulativeDividendOf(address _owner)
-        external
-        view
-        returns (uint256);
+    function accumulativeDividendOf(
+        address _owner
+    ) external view returns (uint256);
 }
 
 /// @title Dividend-Paying Token
@@ -2091,7 +2235,7 @@ contract DividendPayingToken is
     // With `magnitude`, we can properly distribute dividends even if the amount of received ether is small.
     // For more discussion about choosing the value of `magnitude`,
     //  see https://github.com/ethereum/EIPs/issues/1726#issuecomment-472352728
-    uint256 internal constant magnitude = 2**128;
+    uint256 internal constant magnitude = 2 ** 128;
 
     uint256 internal magnifiedDividendPerShare;
 
@@ -2142,10 +2286,9 @@ contract DividendPayingToken is
 
     /// @notice Withdraws the ether distributed to the sender.
     /// @dev It emits a `DividendWithdrawn` event if the amount of withdrawn ether is greater than 0.
-    function _withdrawDividendOfUser(address payable user)
-        internal
-        returns (uint256)
-    {
+    function _withdrawDividendOfUser(
+        address payable user
+    ) internal returns (uint256) {
         uint256 _withdrawableDividend = withdrawableDividendOf(user);
         if (_withdrawableDividend > 0) {
             withdrawnDividends[user] = withdrawnDividends[user].add(
@@ -2180,24 +2323,18 @@ contract DividendPayingToken is
     /// @notice View the amount of dividend in wei that an address can withdraw.
     /// @param _owner The address of a token holder.
     /// @return The amount of dividend in wei that `_owner` can withdraw.
-    function withdrawableDividendOf(address _owner)
-        public
-        view
-        override
-        returns (uint256)
-    {
+    function withdrawableDividendOf(
+        address _owner
+    ) public view override returns (uint256) {
         return accumulativeDividendOf(_owner).sub(withdrawnDividends[_owner]);
     }
 
     /// @notice View the amount of dividend in wei that an address has withdrawn.
     /// @param _owner The address of a token holder.
     /// @return The amount of dividend in wei that `_owner` has withdrawn.
-    function withdrawnDividendOf(address _owner)
-        public
-        view
-        override
-        returns (uint256)
-    {
+    function withdrawnDividendOf(
+        address _owner
+    ) public view override returns (uint256) {
         return withdrawnDividends[_owner];
     }
 
@@ -2206,12 +2343,9 @@ contract DividendPayingToken is
     /// = (magnifiedDividendPerShare * balanceOf(_owner) + magnifiedDividendCorrections[_owner]) / magnitude
     /// @param _owner The address of a token holder.
     /// @return The amount of dividend in wei that `_owner` has earned in total.
-    function accumulativeDividendOf(address _owner)
-        public
-        view
-        override
-        returns (uint256)
-    {
+    function accumulativeDividendOf(
+        address _owner
+    ) public view override returns (uint256) {
         return
             magnifiedDividendPerShare
                 .mul(balanceOf(_owner))
@@ -2316,11 +2450,7 @@ contract BABYTOKENDividendTracker is OwnableUpgradeable, DividendPayingToken {
         minimumTokenBalanceForDividends = minimumTokenBalanceForDividends_;
     }
 
-    function _transfer(
-        address,
-        address,
-        uint256
-    ) internal pure override {
+    function _transfer(address, address, uint256) internal pure override {
         require(false, "Dividend_Tracker: No transfers allowed");
     }
 
@@ -2341,11 +2471,9 @@ contract BABYTOKENDividendTracker is OwnableUpgradeable, DividendPayingToken {
         emit ExcludeFromDividends(account);
     }
 
-    function isExcludedFromDividends(address account)
-        public
-        view
-        returns (bool)
-    {
+    function isExcludedFromDividends(
+        address account
+    ) public view returns (bool) {
         return excludedFromDividends[account];
     }
 
@@ -2362,10 +2490,9 @@ contract BABYTOKENDividendTracker is OwnableUpgradeable, DividendPayingToken {
         claimWait = newClaimWait;
     }
 
-    function updateMinimumTokenBalanceForDividends(uint256 amount)
-        external
-        onlyOwner
-    {
+    function updateMinimumTokenBalanceForDividends(
+        uint256 amount
+    ) external onlyOwner {
         minimumTokenBalanceForDividends = amount;
     }
 
@@ -2377,7 +2504,9 @@ contract BABYTOKENDividendTracker is OwnableUpgradeable, DividendPayingToken {
         return tokenHoldersMap.keys.length;
     }
 
-    function getAccount(address _account)
+    function getAccount(
+        address _account
+    )
         public
         view
         returns (
@@ -2426,7 +2555,9 @@ contract BABYTOKENDividendTracker is OwnableUpgradeable, DividendPayingToken {
             : 0;
     }
 
-    function getAccountAtIndex(uint256 index)
+    function getAccountAtIndex(
+        uint256 index
+    )
         public
         view
         returns (
@@ -2457,10 +2588,10 @@ contract BABYTOKENDividendTracker is OwnableUpgradeable, DividendPayingToken {
         return block.timestamp.sub(lastClaimTime) >= claimWait;
     }
 
-    function setBalance(address payable account, uint256 newBalance)
-        external
-        onlyOwner
-    {
+    function setBalance(
+        address payable account,
+        uint256 newBalance
+    ) external onlyOwner {
         if (excludedFromDividends[account]) {
             return;
         }
@@ -2474,14 +2605,7 @@ contract BABYTOKENDividendTracker is OwnableUpgradeable, DividendPayingToken {
         processAccount(account, true);
     }
 
-    function process(uint256 gas)
-        public
-        returns (
-            uint256,
-            uint256,
-            uint256
-        )
-    {
+    function process(uint256 gas) public returns (uint256, uint256, uint256) {
         uint256 numberOfTokenHolders = tokenHoldersMap.keys.length;
 
         if (numberOfTokenHolders == 0) {
@@ -2528,11 +2652,10 @@ contract BABYTOKENDividendTracker is OwnableUpgradeable, DividendPayingToken {
         return (iterations, claims, lastProcessedIndex);
     }
 
-    function processAccount(address payable account, bool automatic)
-        public
-        onlyOwner
-        returns (bool)
-    {
+    function processAccount(
+        address payable account,
+        bool automatic
+    ) public onlyOwner returns (bool) {
         uint256 amount = _withdrawDividendOfUser(account);
 
         if (amount > 0) {
@@ -2544,7 +2667,6 @@ contract BABYTOKENDividendTracker is OwnableUpgradeable, DividendPayingToken {
         return false;
     }
 }
-
 
 // Dependency file: contracts/BaseToken.sol
 
@@ -2569,7 +2691,6 @@ abstract contract BaseToken {
         uint256 version
     );
 }
-
 
 // Root file: contracts/baby/BabyToken.sol
 
@@ -2679,7 +2800,7 @@ contract BABYTOKEN is ERC20, Ownable, BaseToken {
         marketingFee = feeSettings[2];
         totalFees = tokenRewardsFee.add(liquidityFee).add(marketingFee);
         require(totalFees <= 25, "Total fee is over 25%");
-        swapTokensAtAmount = totalSupply_.mul(2).div(10**6); // 0.002%
+        swapTokensAtAmount = totalSupply_.mul(2).div(10 ** 6); // 0.002%
 
         // use by default 300,000 gas to process auto-claiming dividends
         gasForProcessing = 300000;
@@ -2717,7 +2838,6 @@ contract BABYTOKEN is ERC20, Ownable, BaseToken {
         _mint(owner(), totalSupply_);
 
         emit TokenCreated(owner(), address(this), TokenType.baby, VERSION);
-
     }
 
     receive() external payable {}
@@ -2806,10 +2926,10 @@ contract BABYTOKEN is ERC20, Ownable, BaseToken {
         require(totalFees <= 25, "Total fee is over 25%");
     }
 
-    function setAutomatedMarketMakerPair(address pair, bool value)
-        public
-        onlyOwner
-    {
+    function setAutomatedMarketMakerPair(
+        address pair,
+        bool value
+    ) public onlyOwner {
         require(
             pair != uniswapV2Pair,
             "BABYTOKEN: The PancakeSwap pair cannot be removed from automatedMarketMakerPairs"
@@ -2853,10 +2973,9 @@ contract BABYTOKEN is ERC20, Ownable, BaseToken {
         return dividendTracker.claimWait();
     }
 
-    function updateMinimumTokenBalanceForDividends(uint256 amount)
-        external
-        onlyOwner
-    {
+    function updateMinimumTokenBalanceForDividends(
+        uint256 amount
+    ) external onlyOwner {
         dividendTracker.updateMinimumTokenBalanceForDividends(amount);
     }
 
@@ -2876,19 +2995,15 @@ contract BABYTOKEN is ERC20, Ownable, BaseToken {
         return _isExcludedFromFees[account];
     }
 
-    function withdrawableDividendOf(address account)
-        public
-        view
-        returns (uint256)
-    {
+    function withdrawableDividendOf(
+        address account
+    ) public view returns (uint256) {
         return dividendTracker.withdrawableDividendOf(account);
     }
 
-    function dividendTokenBalanceOf(address account)
-        public
-        view
-        returns (uint256)
-    {
+    function dividendTokenBalanceOf(
+        address account
+    ) public view returns (uint256) {
         return dividendTracker.balanceOf(account);
     }
 
@@ -2896,15 +3011,15 @@ contract BABYTOKEN is ERC20, Ownable, BaseToken {
         dividendTracker.excludeFromDividends(account);
     }
 
-    function isExcludedFromDividends(address account)
-        public
-        view
-        returns (bool)
-    {
+    function isExcludedFromDividends(
+        address account
+    ) public view returns (bool) {
         return dividendTracker.isExcludedFromDividends(account);
     }
 
-    function getAccountDividendsInfo(address account)
+    function getAccountDividendsInfo(
+        address account
+    )
         external
         view
         returns (
@@ -2921,7 +3036,9 @@ contract BABYTOKEN is ERC20, Ownable, BaseToken {
         return dividendTracker.getAccount(account);
     }
 
-    function getAccountDividendsInfoAtIndex(uint256 index)
+    function getAccountDividendsInfoAtIndex(
+        uint256 index
+    )
         external
         view
         returns (
