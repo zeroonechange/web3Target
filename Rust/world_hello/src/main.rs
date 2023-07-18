@@ -1,3 +1,2 @@
-// 特征trait
-// 泛型  特征trait  特征对象  深入特征
+// 集合类型  动态数组   hashmap
 fn main() {}
