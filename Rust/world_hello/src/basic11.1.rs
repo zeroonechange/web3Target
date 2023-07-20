@@ -1,5 +1,5 @@
 /** 
- * use  受限引入模块
+ * 项目 package
 项目 package     包含 Cargo.toml  只能包含一个库 library的包 和多个二进制可执行的包
             1. 二进制package  cargo new xxx 
             2. 库package     cargo new xxx --lib   只能被引用  不能独立运行 
@@ -22,5 +22,6 @@ use  受限引入模块
 │   └── simple_bench.rs
 └── examples                项目示例
     └── simple_example.rs
+
 */
 fn main() {}
