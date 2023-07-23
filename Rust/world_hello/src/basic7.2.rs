@@ -1,4 +1,4 @@
-// 特征trait
+// 特征trait   抽象类
 // 泛型  特征trait  特征对象  深入特征
 
 use std::{ fmt::Display, process::Output };

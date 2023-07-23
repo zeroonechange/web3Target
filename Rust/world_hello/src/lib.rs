@@ -87,8 +87,12 @@ pub fn eat_restaurantttttt() {
 
 use std::fmt::Result;
 use std::io::Result as IoResult;
-fn f1() -> Result {}
-fn f2() -> IoResult {}
+fn f1() -> Result {
+    Ok(())
+}
+fn f2() -> IoResult<i32> {
+    Ok(2)
+}
 
 // 引入第三方包
 // 修改 Cargo.toml 文件，在 [dependencies] 区域添加一行：rand = "0.8.3"

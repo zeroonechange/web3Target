@@ -42,12 +42,14 @@ trait Animal {
 }
 struct Dog;
 impl Dog {
+    // 扩展函数
     fn baby_name() -> String {
         String::from("Spot")
     }
 }
 
 impl Animal for Dog {
+    // 实现接口 抽象类
     fn baby_name() -> String {
         String::from("puppy")
     }
