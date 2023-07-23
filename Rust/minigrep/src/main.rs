@@ -5,8 +5,7 @@ use minigrep::Config;
 
 // cargo run -- test poem.txt
 fn main() {
-    let args = env::args().collect::<Vec<String>>();
-    let config = Config::build(&args).unwrap_or_else(|err| {
+    let config = Config::build(env::args()).unwrap_or_else(|err| {
         eprintln!("解析参数异常: {err}");
         process::exit(1);
     });
