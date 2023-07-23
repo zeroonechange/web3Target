@@ -3,11 +3,11 @@ use std::process;
 
 use minigrep::Config;
 
-// cargo run -- test sample.txt
+// cargo run -- test poem.txt
 fn main() {
     let args = env::args().collect::<Vec<String>>();
     let config = Config::build(&args).unwrap_or_else(|err| {
-        println!("解析参数异常: {err}");
+        eprintln!("解析参数异常: {err}");
         process::exit(1);
     });
 
@@ -16,7 +16,7 @@ fn main() {
 
     // 简洁
     if let Err(e) = minigrep::run(config) {
-        println!("Application error: {e}");
+        eprintln!("Application error: {e}");
         process::exit(1);
     }
 }
