@@ -12,7 +12,7 @@ type Job = Box<dyn FnOnce() + Send + 'static>;
 // sender
 pub struct ThreadPool {
     workers: Vec<Worker>,
-    sender: mpsc::Sender<Job>,
+    sender: Option<mpsc::Sender<Job>>,
 }
 
 impl ThreadPool {
@@ -34,14 +34,26 @@ impl ThreadPool {
             workers.push(Worker::new(id, Arc::clone(&receiver)));
         }
         // 构建线程池  里面的 workers持有 消息通道的接受端
-        ThreadPool { workers, sender }
+        ThreadPool { workers, sender: Some(sender) }
     }
 
     pub fn execute<F>(&self, f: F) where F: FnOnce() + Send + 'static {
         let job = Box::new(f); // 这里为啥还要用 Box去堆上分配内存？
         // 发送出去   这个 f 是 闭包 里面是具体的线程执行逻辑
         // 通过消息通道的发送端 将具体逻辑发送给给worker去执行
-        self.sender.send(job).unwrap();
+        self.sender.as_ref().unwrap().send(job).unwrap();
+    }
+}
+
+impl Drop for ThreadPool {
+    fn drop(&mut self) {
+        drop(self.sender.take());
+        for worker in &mut self.workers {
+            println!("Shutting down worker {}", worker.id);
+            if let Some(thread) = worker.thread.take() {
+                thread.join().unwrap();
+            }
+        }
     }
 }
 
@@ -49,7 +61,7 @@ impl ThreadPool {
 // thread 为了将 创建线程 和执行任务分开  里面存放实际的线程运行逻辑 需要的时候拿出来执行
 struct Worker {
     id: usize,
-    thread: thread::JoinHandle<()>,
+    thread: Option<thread::JoinHandle<()>>,
 }
 
 impl Worker {
@@ -63,11 +75,19 @@ impl Worker {
             loop {
                 // lock 获取一个 mutex锁 获取锁内容后 调用 recv() 来接受消息  是阻塞的  没任务一直等待
                 // Mutex<T> 同一个任务只会被一个 worker获取
-                let job = receiver.lock().unwrap().recv().unwrap();
-                println!("Worker {} got a job; executing.", id);
-                job();
+                let message = receiver.lock().unwrap().recv();
+                match message {
+                    Ok(job) => {
+                        println!("Worker {} got a job; executing.", id);
+                        job();
+                    }
+                    Err(_) => {
+                        println!("Worker {} disconnected; shutting down.", id);
+                        break;
+                    }
+                }
             }
         });
-        Worker { id, thread }
+        Worker { id, thread: Some(thread) }
     }
 }

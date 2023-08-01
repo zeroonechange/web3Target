@@ -11,7 +11,7 @@ fn main() {
     // 创建线程池  实际启动了多个worker线程  里面持有消息通道的接受端  内部一直循环
     let pool = ThreadPool::new(4);
     // 处理每个客户端的请求
-    for stream in listener.incoming() {
+    for stream in listener.incoming().take(2) {
         let stream = stream.unwrap();
         println!("connection established");
         // 分发执行  将逻辑放进闭包  然后通过 消息通道的发送端发送出去   给worker去执行   具体执行还是worker里面的线程
