@@ -1,7 +1,35 @@
 ```rust
 
-Stream
+异步和同步共存
+    异步 = async+await    同步=spwan_blocking
+    runtime.spawn  创建一个基于该运行时的后台任务
+    tikio::runtime  俩个模式
+                    1.current_thread  不生成新线程 只运行中已有主线程上  只有runtime.block_on被调 才执行异步并返回结果 将异步转为同步
+                    2.multi_thread    生成多个后台现场  并行处理   不需要block_on 阻塞并等待
+                        还能  1.消息传递 tokio::sync::mpsc  让异步任务将结果发送到主线程 主线程通过 .recv 方法等待这些结果
+                             2.共享变量   例如 Mutex   适合 GUI的进度条
+    发送消息   在同步代码中使用异步另一种方法就是生成一个运行时  用消息传递的方式和它交互
 
+
+
+graceful shutdown
+    合适的关闭时机  关闭子部分并等待全部结束
+    1.检测os的关闭信号  tokio::signal::ctrl_c
+    2.通知 - 广播  每个任务持有一个广播消息通道的接受端  let next_frame = tokio::select! { ...   _ = self.shutdown.recv() => { ... }   }
+    3.等待各个部分结束   -  mpsc 消息通道特性: 每个任务都拿走一个发送端-clone  任务结束时drop掉  所有发动端都drop 接受端会收到错误 从而结束
+
+
+Stream
+    迭代器 异步迭代   异步for循环？
+    mini-redis 广播  tokio::pin!  -   while let Some(msg) = message.next().await{ ... }
+    适配器
+        1. 迭代器适配器  将一个迭代器转化为另一个  例 map filter
+        2. 消费者适配器  消费掉一个迭代器 生成一个值  collect
+    stream的适配器 map  take  filter  例如
+        let msg = subscriber.into_stream().take(3).filter(|msg| match msg{
+                                                            Ok(msg) if msg.content.len() == 1 => true,
+                                                            _ => false,
+                                                        });
 
 select!
     允许等待多个计算操作 当其中一个操作完成就推出等待
