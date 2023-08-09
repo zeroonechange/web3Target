@@ -41,7 +41,7 @@ impl<T> List<T> {
     pub fn into_iter(self) -> IntoIter<T> {
         IntoIter(self)
     }
-
+    // 没用到生命周期
     pub fn iter(&self) -> Iter<'_, T> {
         Iter { next: self.head.as_deref() }
     }
@@ -70,15 +70,18 @@ impl<T> Iterator for IntoIter<T> {
     }
 }
 
+// 生命周期
 pub struct Iter<'a, T> {
     next: Option<&'a Node<T>>,
 }
-
+// 前面是生命周期  后面是泛型
 impl<'a, T> Iterator for Iter<'a, T> {
     type Item = &'a T;
     fn next(&mut self) -> Option<Self::Item> {
+        // 对于 Option 可以用 map 这种操作符做转换
         self.next.map(|node| {
-            self.next = node.next.as_deref();
+            // self.next = node.next.map(|node| &*node);  上面这个所有权转移到了map中 内部引用了一个局部值  悬垂引用
+            self.next = node.next.as_deref(); // 这个 as_deref() 代替类似 map(|node| &**node)  而 as_deref_mut() 代替 map(|node| &mut**node)
             &node.elem
         })
     }

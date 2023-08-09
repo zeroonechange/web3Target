@@ -1,26 +1,45 @@
 rust链表 皇冠上的明珠
 
+```
+第一本书-圣经   https://course.rs/about-book.html
+官方文档        https://kaisery.github.io/trpl-zh-cn/title-page.html
+通过例子学rust  https://rustwiki.org/zh-CN/rust-by-example/
+```
+
 ```rust
+持久化单向链表   共享所有权
 
-Option
-用 Option.take 方法来替代 mem::replace
-
-泛型支持 所有类型的值
-
-定义peek 函数   返回表头元素的引用
-
-Option.as_ref()  将一个 Option<T> 变成一个 Option<&T>      不可变引用
-Option.as_mut()  将一个 Option<T> 变成一个 Option<&mut T>    可变引用
-
-
-每个集合都应该实现3种迭代器
-IntoIter - T             类型迭代器的 next 方法会拿走被迭代值的所有权
-IterMut - &mut T         是可变借用
-Iter - &T                是不可变借用
 
 ```
 
 ```rust
+还可以的单向链表  -- peek intoIter  Iter  IterMut
+
+    Option
+    用 Option.take 方法来替代 mem::replace
+
+    泛型支持 所有类型的值
+
+    定义peek 函数   返回表头元素的引用
+
+    Option.as_ref()  将一个 Option<T> 变成一个 Option<&T>      不可变引用
+    Option.as_mut()  将一个 Option<T> 变成一个 Option<&mut T>    可变引用
+
+
+    每个集合都应该实现3种迭代器
+    IntoIter - T             类型迭代器的 next 方法会拿走被迭代值的所有权
+    IterMut - &mut T         是可变借用
+    Iter - &T                是不可变借用
+
+    as_deref() 代替类似 map(|node| &**node)  而 as_deref_mut() 代替 map(|node| &mut**node)
+
+
+
+```
+
+```rust
+不太优秀的单向链表  -- 基操
+
     指针类型: &, &mut, Box, Rc, Arc, *const, *mut, NonNull
     所有权、借用、继承可变性、内部可变性、Copy
     所有的关键字：struct、enum、fn、pub、impl、use, ...
