@@ -1,6 +1,26 @@
 rust链表 皇冠上的明珠
 
 ```rust
+
+Option
+用 Option.take 方法来替代 mem::replace
+
+泛型支持 所有类型的值
+
+定义peek 函数   返回表头元素的引用
+
+Option.as_ref()  将一个 Option<T> 变成一个 Option<&T>      不可变引用
+Option.as_mut()  将一个 Option<T> 变成一个 Option<&mut T>    可变引用
+
+
+每个集合都应该实现3种迭代器
+IntoIter - T             类型迭代器的 next 方法会拿走被迭代值的所有权
+IterMut - &mut T         是可变借用
+Iter - &T                是不可变借用
+
+```
+
+```rust
     指针类型: &, &mut, Box, Rc, Arc, *const, *mut, NonNull
     所有权、借用、继承可变性、内部可变性、Copy
     所有的关键字：struct、enum、fn、pub、impl、use, ...
@@ -86,9 +106,4 @@ while let使用  从右到左   +  Box 解引用
         while let Link::More(mut boxed_node) = cur_link{
                 cur_link = mem:replace(&mut boxed_node, Link::Empty);
         }
-
-
-
-
-
 ```
