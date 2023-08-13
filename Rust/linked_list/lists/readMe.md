@@ -7,7 +7,42 @@ rust链表 皇冠上的明珠
 ```
 
 ```rust
+不咋样的双端队列   让Rc可变
+    使用 RefCell  拥有不可变引用的同时修改目标数据  Cell 和 RefCell 没啥区别  Cell<T> 适用于 T 实现了 Copy 不会panic  而 RefCell提供引用 会panic
+    Cell 可无限 get 和  set
+    内部可变性？ 对一个不可变的值进行可变借用  let x=5;  let y=&mut x;
+    常见组合 Rc + RefCell  前者实现一个数据拥有多个所有者 后者实现了数据的可变性
+        Cell::from_mut，该方法将 &mut T 转为 &Cell<T>
+        Cell::as_slice_of_cells，该方法将 &Cell<[T]> 转为 &[Cell<T>]
+
+        Cell 和 RefCell 都为我们带来了内部可变性这个重要特性，同时还将借用规则的检查从编译期推迟到运行期，但是这个检查并不能被绕过，该来早晚还是会来，RefCell 在运行期的报错会造成 panic
+        RefCell 适用于编译器误报或者一个引用被在多个代码中使用、修改以至于难于管理借用关系时，还有就是需要内部可变性时。
+        从性能上看，RefCell 由于是非线程安全的，因此无需保证原子性，性能虽然有一点损耗，但是依然非常好，而 Cell 则完全不存在任何额外的性能损耗。
+        Rc 跟 RefCell 结合使用可以实现多个所有者共享同一份数据，非常好用，但是潜在的性能损耗也要考虑进去，建议对于热点代码使用时，做好 benchmark。
+
+        Option<>.take  clone   map
+        borrow_mut()
+        RecCekk.into_inner()
+        Rc::try_unwrap(xx).ok().unwrap().into_inner().elem
+
+        while self.pop_front().is_some() {}
+
+        self.head.as_ref().map( |node|  {
+            Ref::map(node.borrow(), |node|  &node.elem)
+        })
+
+        RefMut::map(node.borrow(), |node|  &node.elem)
+```
+
+```rust
 持久化单向链表   共享所有权
+使用 RC/ARC   clone
+为啥要用 Option<Rc<Node<T>>>  而不是  Rc<Node<T>>  因为 option也有这种功能
+
+    option.take()
+    option.as_ref().and_then()
+    option.as_deref()
+Rc::try_unwrap(node)
 
 
 ```
