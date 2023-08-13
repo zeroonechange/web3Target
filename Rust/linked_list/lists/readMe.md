@@ -7,6 +7,75 @@ rust链表 皇冠上的明珠
 ```
 
 ```rust
+不错的 unsafe 队列
+    Rc 和 RefCell 对于简单任务非常ok  复杂任务就要歇菜
+    使用 裸指针 + unsafe 单向链表
+    将一个普通的引用变成裸指针: 强制转换 Coercions
+    let raw_tail: *mut _ = &mut *new_tail;
+    unsafe{ (*self.tail).next = Some(new_tail); }  创建原生指针安全 解引用不安全
+
+Miri
+    可以生成 Rust 的中间层表示 MIR，对于编译器来说，我们的 Rust 代码首先会被编译为 MIR ，然后再提交给 LLVM 进行处理
+    通过 rustup component add miri 来安装它，并通过 cargo miri 来使用，同时还可以使用 cargo miri test 来运行测试代码
+    miri 可以帮助我们检查常见的未定义行为(UB = Undefined Behavior)，以下列出了一部分:
+        内存越界检查和内存释放后再使用(use-after-free)
+        使用未初始化的数据
+        数据竞争
+        内存对齐问题
+    UB 检测是必须的，因为它发生在运行时，因此很难发现，如果 miri 能在编译期检测出来，那自然是最好不过的。
+
+$ rustup +nightly-2023-08-13 component add miri
+$ rustup +nightly component add miri
+$ cargo +nightly-2022-01-21 miri test
+
+栈借用-rust来处理再借用的解决方案  指针混叠  俩个指针指向的内存区域存在重叠
+    严格的借用规则是我们的后盾：要么同时存在一个可变引用，要么同时存在多个不可变引用，这种规则简直完美避免了：两个指针指向同一块儿重叠内存区域，而其中一个是可变指针。
+使用栈来存放嵌套的借用 存在多个借用 同一时间只有一个可边引用访问目标内存  使用 unsafe 借用检查器无法帮助我们
+只有栈顶是处于live状态被借用
+访问栈顶下面元素时，该元素会变为live，栈顶会弹出，弹出的元素无法再被借用
+
+对裸指针进行拷贝
+一旦开始使用裸指针 就要尝试只使用它
+
+案例:  &mut -> *mut -> &mut -> *mut
+unsafe {
+    let mut data = 10;
+    let ref1 = &mut data;
+    let ptr2 = ref1 as *mut _;
+    let ref3 = &mut *ptr2;
+    let ptr4 = ref3 as *mut _;
+    // Access things in "borrow stack" order
+    *ptr4 += 4;
+    *ref3 += 3;
+    *ptr2 += 2;
+    *ref1 += 1;
+    println!("{}", data);
+}
+
+不允许我们对数组的不同元素进行单独的借用 - 将一个数组分成多个部分
+
+裸指针可以被简单的拷贝只要它们共享同一个借用
+
+无法将一个不可变的引用转换成可变的裸指针
+    let ptr4 = sref3 as *const i32 as *mut i32;
+先将不可变引用转换成不可变的裸指针，然后再转换成可变的裸指针
+
+在借用栈中，一个不可变引用，它上面的所有引用( 在它之后被推入借用栈的引用 )都只能拥有只读的权限。
+
+Box 在某种程度上类似 &mut，因为对于它指向的内存区域，它拥有唯一的所有权。
+
+将安全的指针 & 、&mut 和 Box 跟不安全的裸指针 *mut 和 *const 混用是 UB 的根源之一
+当使用裸指针时，Option 对我们是相当不友好的
+借用 Box，再借用一个裸指针，然后先弹出该裸指针，再弹出 Box
+从安全的东东开始，将其转换成裸指针，最后再将裸指针转回安全的东东以实现安全的 drop
+    let x = Box::new(String::from("Hello"));
+    let ptr = Box::into_raw(x);  // 消费掉 Box (拿走所有权)，返回一个裸指针
+    let x = unsafe { Box::from_raw(ptr) };  // 使用 Box::from_raw 来清理内存
+
+
+```
+
+```rust
 不咋样的双端队列   让Rc可变
     使用 RefCell  拥有不可变引用的同时修改目标数据  Cell 和 RefCell 没啥区别  Cell<T> 适用于 T 实现了 Copy 不会panic  而 RefCell提供引用 会panic
     Cell 可无限 get 和  set
@@ -18,7 +87,7 @@ rust链表 皇冠上的明珠
         Cell 和 RefCell 都为我们带来了内部可变性这个重要特性，同时还将借用规则的检查从编译期推迟到运行期，但是这个检查并不能被绕过，该来早晚还是会来，RefCell 在运行期的报错会造成 panic
         RefCell 适用于编译器误报或者一个引用被在多个代码中使用、修改以至于难于管理借用关系时，还有就是需要内部可变性时。
         从性能上看，RefCell 由于是非线程安全的，因此无需保证原子性，性能虽然有一点损耗，但是依然非常好，而 Cell 则完全不存在任何额外的性能损耗。
-        Rc 跟 RefCell 结合使用可以实现多个所有者共享同一份数据，非常好用，但是潜在的性能损耗也要考虑进去，建议对于热点代码使用时，做好 benchmark。
+        Rc 跟 RefCell 结合使用可以实现多个所有者共享同一份数据，非常好用，但是潜在的性能损耗也要考虑进去，建议对于热点代码使用时，做好 benchmark
 
         Option<>.take  clone   map
         borrow_mut()
