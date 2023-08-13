@@ -7,6 +7,13 @@ rust链表 皇冠上的明珠
 ```
 
 ```rust
+双单向链表   List 放俩个栈 stack  一个left 一个right
+
+栈上的链表   不分配在堆上
+
+```
+
+```rust
 不错的 unsafe 队列
     Rc 和 RefCell 对于简单任务非常ok  复杂任务就要歇菜
     使用 裸指针 + unsafe 单向链表
