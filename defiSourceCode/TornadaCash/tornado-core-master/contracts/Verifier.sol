@@ -108,7 +108,7 @@ library Pairing {
    *         e(p1[0], p2[0]) *  .... * e(p1[n], p2[n]) == 1
    *         For example,
    *         pairing([P1(), P1().negate()], [P2(), P2()]) should return true.
-   */
+   */ 
   function pairing(
     G1Point memory a1,
     G2Point memory a2,
