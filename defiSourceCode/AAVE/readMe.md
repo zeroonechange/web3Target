@@ -1,4 +1,10 @@
 ```
+1.白皮书
+2.合约代码
+
+```
+
+```
 看文档  https://docs.aave.com/hub/
 
 Aavenomics
@@ -15,8 +21,14 @@ Aavenomics
         短缺事件 防止踩踏 过量AAVE流入市场
 
     Incentives Policy & AAVE Reserve
+        安全模块激励     流动性激励
+
     Flashpaper
+        LEND 100:1 AAVE 迁移  总供应量=16M    Safety Module
     Terminology
+        Aave Genesis Governance     Aave Improvement Proposals
+        Backstop    Ecosystem Incentives/Reserve
+        Recovery Issusnace      Safety Incentives/Module
 
 Risk
     Risk Framework

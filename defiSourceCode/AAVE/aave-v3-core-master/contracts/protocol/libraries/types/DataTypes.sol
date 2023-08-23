@@ -1,7 +1,10 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity ^0.8.0;
 
+
+// struct 设计原则    能省空间就节省  不能就直接放 
 library DataTypes {
+  // 池子的配置
   struct ReserveData {
     //stores the reserve configuration
     ReserveConfigurationMap configuration;
@@ -35,6 +38,7 @@ library DataTypes {
     uint128 isolationModeTotalDebt;
   }
 
+  // 池子的参数  全放在一个slot里面 
   struct ReserveConfigurationMap {
     //bit 0-15: LTV
     //bit 16-31: Liq. threshold
@@ -57,7 +61,7 @@ library DataTypes {
     //bit 212-251 debt ceiling for isolation mode with (ReserveConfiguration::DEBT_CEILING_DECIMALS) decimals
     //bit 252-255 unused
 
-    uint256 data;
+    uint256 data;  // 特么的可真牛  靠掩码和二进制运算去修改 
   }
 
   struct UserConfigurationMap {
@@ -69,6 +73,7 @@ library DataTypes {
     uint256 data;
   }
 
+  // eMode  
   struct EModeCategory {
     // each eMode category has a custom ltv and liquidation threshold
     uint16 ltv;
@@ -79,8 +84,10 @@ library DataTypes {
     string label;
   }
 
+  // 利率模式  稳定的和浮动的
   enum InterestRateMode {NONE, STABLE, VARIABLE}
 
+  // 池子缓存？ 
   struct ReserveCache {
     uint256 currScaledVariableDebt;
     uint256 nextScaledVariableDebt;
@@ -104,6 +111,7 @@ library DataTypes {
     uint40 stableDebtLastUpdateTimestamp;
   }
 
+  // 执行清算的参数 
   struct ExecuteLiquidationCallParams {
     uint256 reservesCount;
     uint256 debtToCover;
@@ -116,6 +124,7 @@ library DataTypes {
     address priceOracleSentinel;
   }
 
+  // 执行供应的参数  应该就是存款  把token放到池子里 
   struct ExecuteSupplyParams {
     address asset;
     uint256 amount;
@@ -123,6 +132,7 @@ library DataTypes {
     uint16 referralCode;
   }
 
+  // 执行借钱的参数  
   struct ExecuteBorrowParams {
     address asset;
     address user;
@@ -138,6 +148,7 @@ library DataTypes {
     address priceOracleSentinel;
   }
 
+  // 还钱的参数
   struct ExecuteRepayParams {
     address asset;
     uint256 amount;
@@ -146,6 +157,7 @@ library DataTypes {
     bool useATokens;
   }
 
+  // 取款的参数
   struct ExecuteWithdrawParams {
     address asset;
     uint256 amount;
@@ -155,12 +167,14 @@ library DataTypes {
     uint8 userEModeCategory;
   }
 
+  // 设置用户EMode的模式
   struct ExecuteSetUserEModeParams {
     uint256 reservesCount;
     address oracle;
     uint8 categoryId;
   }
 
+  // 转账参数
   struct FinalizeTransferParams {
     address asset;
     address from;
@@ -173,6 +187,7 @@ library DataTypes {
     uint8 fromEModeCategory;
   }
 
+  // 闪电贷参数 
   struct FlashloanParams {
     address receiverAddress;
     address[] assets;
@@ -190,6 +205,7 @@ library DataTypes {
     bool isAuthorizedFlashBorrower;
   }
 
+  // 简单闪电贷参数
   struct FlashloanSimpleParams {
     address receiverAddress;
     address asset;
@@ -200,6 +216,7 @@ library DataTypes {
     uint256 flashLoanPremiumTotal;
   }
 
+  // 闪电贷还钱参数
   struct FlashLoanRepaymentParams {
     uint256 amount;
     uint256 totalPremium;
@@ -209,6 +226,7 @@ library DataTypes {
     uint16 referralCode;
   }
 
+  // 计算用户账号数据参数
   struct CalculateUserAccountDataParams {
     UserConfigurationMap userConfig;
     uint256 reservesCount;
@@ -217,6 +235,7 @@ library DataTypes {
     uint8 userEModeCategory;
   }
 
+  // 校验借钱参数
   struct ValidateBorrowParams {
     ReserveCache reserveCache;
     UserConfigurationMap userConfig;
@@ -234,6 +253,7 @@ library DataTypes {
     uint256 isolationModeDebtCeiling;
   }
 
+  // 校验清算参数
   struct ValidateLiquidationCallParams {
     ReserveCache debtReserveCache;
     uint256 totalDebt;
@@ -241,6 +261,7 @@ library DataTypes {
     address priceOracleSentinel;
   }
 
+  // 计算利率参数
   struct CalculateInterestRatesParams {
     uint256 unbacked;
     uint256 liquidityAdded;
@@ -253,6 +274,7 @@ library DataTypes {
     address aToken;
   }
 
+  // 初始化池子参数
   struct InitReserveParams {
     address asset;
     address aTokenAddress;
