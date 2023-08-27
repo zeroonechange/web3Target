@@ -64,6 +64,7 @@ library BorrowLogic {
    * @param userConfig The user configuration mapping that tracks the supplied/borrowed assets
    * @param params The additional parameters needed to execute the borrow function
    */
+  // 借钱逻辑
   function executeBorrow(
     mapping(address => DataTypes.ReserveData) storage reservesData,
     mapping(uint256 => address) storage reservesList,
@@ -177,6 +178,7 @@ library BorrowLogic {
    * @param params The additional parameters needed to execute the repay function
    * @return The actual amount being repaid
    */
+  // 还款逻辑
   function executeRepay(
     mapping(address => DataTypes.ReserveData) storage reservesData,
     mapping(uint256 => address) storage reservesList,
@@ -273,6 +275,7 @@ library BorrowLogic {
    * @param asset The asset of the position being rebalanced
    * @param user The user being rebalanced
    */
+  // 重计算稳定币借贷率
   function executeRebalanceStableBorrowRate(
     DataTypes.ReserveData storage reserve,
     address asset,
@@ -304,6 +307,7 @@ library BorrowLogic {
    * @param asset The asset of the position being swapped
    * @param interestRateMode The current interest rate mode of the position being swapped
    */
+  // 兑换借贷率
   function executeSwapBorrowRateMode(
     DataTypes.ReserveData storage reserve,
     DataTypes.UserConfigurationMap storage userConfig,

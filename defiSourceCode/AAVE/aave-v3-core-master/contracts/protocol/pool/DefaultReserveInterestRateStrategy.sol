@@ -155,6 +155,7 @@ contract DefaultReserveInterestRateStrategy is IDefaultInterestRateStrategy {
   }
 
   /// @inheritdoc IReserveInterestRateStrategy
+  // 计算当前利率
   function calculateInterestRates(
     DataTypes.CalculateInterestRatesParams memory params
   ) public view override returns (uint256, uint256, uint256) {
@@ -218,9 +219,9 @@ contract DefaultReserveInterestRateStrategy is IDefaultInterestRateStrategy {
       );
 
     return (
-      vars.currentLiquidityRate,
-      vars.currentStableBorrowRate,
-      vars.currentVariableBorrowRate
+      vars.currentLiquidityRate, // 资金利用率 = 总债务 / 总总储蓄    总债务=浮动利率债务+稳定利率债务
+      vars.currentStableBorrowRate, //浮动资金利用率
+      vars.currentVariableBorrowRate //稳定资金利用率
     );
   }
 

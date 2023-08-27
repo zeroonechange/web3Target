@@ -17,6 +17,7 @@ import {ReserveConfiguration} from '../configuration/ReserveConfiguration.sol';
  * @title SupplyLogic library
  * @author Aave
  * @notice Implements the base logic for supply/withdraw
+ * 逻辑 存钱  取钱逻辑
  */
 library SupplyLogic {
   using ReserveLogic for DataTypes.ReserveCache;
@@ -48,6 +49,7 @@ library SupplyLogic {
    * @param reservesList The addresses of all the active reserves
    * @param userConfig The user configuration mapping that tracks the supplied/borrowed assets
    * @param params The additional parameters needed to execute the supply function
+   *存钱  类似mint  要计算利率
    */
   function executeSupply(
     mapping(address => DataTypes.ReserveData) storage reservesData,
@@ -102,6 +104,7 @@ library SupplyLogic {
    * @param userConfig The user configuration mapping that tracks the supplied/borrowed assets
    * @param params The additional parameters needed to execute the withdraw function
    * @return The actual amount withdrawn
+   // 提款  类似 burn 
    */
   function executeWithdraw(
     mapping(address => DataTypes.ReserveData) storage reservesData,
@@ -173,6 +176,7 @@ library SupplyLogic {
    * @param eModeCategories The configuration of all the efficiency mode categories
    * @param usersConfig The users configuration mapping that track the supplied/borrowed assets
    * @param params The additional parameters needed to execute the finalizeTransfer function
+   *
    */
   function executeFinalizeTransfer(
     mapping(address => DataTypes.ReserveData) storage reservesData,

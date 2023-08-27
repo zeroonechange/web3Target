@@ -15,9 +15,9 @@ library DataTypes {
     //variable borrow index. Expressed in ray
     uint128 variableBorrowIndex;
     //the current variable borrow rate. Expressed in ray
-    uint128 currentVariableBorrowRate;
+    uint128 currentVariableBorrowRate; //当前浮动资金利用率
     //the current stable borrow rate. Expressed in ray
-    uint128 currentStableBorrowRate;
+    uint128 currentStableBorrowRate;   //当前稳定资金利用率
     //timestamp of last update
     uint40 lastUpdateTimestamp;
     //the id of the reserve. Represents the position in the list of the active reserves
