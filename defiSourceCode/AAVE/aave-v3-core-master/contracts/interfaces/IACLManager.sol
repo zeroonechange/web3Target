@@ -8,6 +8,7 @@ import {IPoolAddressesProvider} from './IPoolAddressesProvider.sol';
  * @author Aave
  * @notice Defines the basic interface for the ACL Manager
  */
+// 定义权限  get/set 方法
 interface IACLManager {
   /**
    * @notice Returns the contract address of the PoolAddressesProvider
@@ -19,36 +20,42 @@ interface IACLManager {
    * @notice Returns the identifier of the PoolAdmin role
    * @return The id of the PoolAdmin role
    */
+  // 最牛的权限吧
   function POOL_ADMIN_ROLE() external view returns (bytes32);
 
   /**
    * @notice Returns the identifier of the EmergencyAdmin role
    * @return The id of the EmergencyAdmin role
    */
+  // 紧急权限
   function EMERGENCY_ADMIN_ROLE() external view returns (bytes32);
 
   /**
    * @notice Returns the identifier of the RiskAdmin role
    * @return The id of the RiskAdmin role
    */
+  // 风控权限
   function RISK_ADMIN_ROLE() external view returns (bytes32);
 
   /**
    * @notice Returns the identifier of the FlashBorrower role
    * @return The id of the FlashBorrower role
    */
+  // 闪电借款权限
   function FLASH_BORROWER_ROLE() external view returns (bytes32);
 
   /**
    * @notice Returns the identifier of the Bridge role
    * @return The id of the Bridge role
    */
+  // 跨链
   function BRIDGE_ROLE() external view returns (bytes32);
 
   /**
    * @notice Returns the identifier of the AssetListingAdmin role
    * @return The id of the AssetListingAdmin role
    */
+  // 资产列表管理权限
   function ASSET_LISTING_ADMIN_ROLE() external view returns (bytes32);
 
   /**
