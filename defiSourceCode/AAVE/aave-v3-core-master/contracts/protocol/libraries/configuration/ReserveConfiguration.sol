@@ -9,7 +9,9 @@ import {DataTypes} from '../types/DataTypes.sol';
  * @author Aave
  * @notice Implements the bitmap logic to handle the reserve configuration
  */
+// 管理池子参数 DataTypes.sol ReserveConfigurationMap
 library ReserveConfiguration {
+  // 各种掩码  为了用一个 slot 也是用心良苦  节省 gas 费   值得借鉴
   uint256 internal constant LTV_MASK =                       0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000; // prettier-ignore
   uint256 internal constant LIQUIDATION_THRESHOLD_MASK =     0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000FFFF; // prettier-ignore
   uint256 internal constant LIQUIDATION_BONUS_MASK =         0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000FFFFFFFF; // prettier-ignore
@@ -31,6 +33,7 @@ library ReserveConfiguration {
   uint256 internal constant DEBT_CEILING_MASK =              0xF0000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF; // prettier-ignore
 
   /// @dev For the LTV, the start bit is 0 (up to 15), hence no bitshifting is needed
+  // 这是每个 参数的  bit 位置   想要精准控制 就得把这些位置记下来  便于修改
   uint256 internal constant LIQUIDATION_THRESHOLD_START_BIT_POSITION = 16;
   uint256 internal constant LIQUIDATION_BONUS_START_BIT_POSITION = 32;
   uint256 internal constant RESERVE_DECIMALS_START_BIT_POSITION = 48;
@@ -50,30 +53,32 @@ library ReserveConfiguration {
   uint256 internal constant UNBACKED_MINT_CAP_START_BIT_POSITION = 176;
   uint256 internal constant DEBT_CEILING_START_BIT_POSITION = 212;
 
+  // 这是参数的最大值  防止越界  65536 是 2^16  也就是16位
   uint256 internal constant MAX_VALID_LTV = 65535;
   uint256 internal constant MAX_VALID_LIQUIDATION_THRESHOLD = 65535;
   uint256 internal constant MAX_VALID_LIQUIDATION_BONUS = 65535;
-  uint256 internal constant MAX_VALID_DECIMALS = 255;
+  uint256 internal constant MAX_VALID_DECIMALS = 255; // 2^8
   uint256 internal constant MAX_VALID_RESERVE_FACTOR = 65535;
-  uint256 internal constant MAX_VALID_BORROW_CAP = 68719476735;
+  uint256 internal constant MAX_VALID_BORROW_CAP = 68719476735; // 2^36
   uint256 internal constant MAX_VALID_SUPPLY_CAP = 68719476735;
   uint256 internal constant MAX_VALID_LIQUIDATION_PROTOCOL_FEE = 65535;
   uint256 internal constant MAX_VALID_EMODE_CATEGORY = 255;
   uint256 internal constant MAX_VALID_UNBACKED_MINT_CAP = 68719476735;
-  uint256 internal constant MAX_VALID_DEBT_CEILING = 1099511627775;
+  uint256 internal constant MAX_VALID_DEBT_CEILING = 1099511627775; // 2^40
 
-  uint256 public constant DEBT_CEILING_DECIMALS = 2;
-  uint16 public constant MAX_RESERVES_COUNT = 128;
+  uint256 public constant DEBT_CEILING_DECIMALS = 2; // 债务上限精度
+  uint16 public constant MAX_RESERVES_COUNT = 128; // 最大的池子数量
 
   /**
    * @notice Sets the Loan to Value of the reserve
    * @param self The reserve configuration
    * @param ltv The new ltv
    */
+  // 设置 LTV - the loan to value  债务   代码写的真清晰
   function setLtv(DataTypes.ReserveConfigurationMap memory self, uint256 ltv) internal pure {
-    require(ltv <= MAX_VALID_LTV, Errors.INVALID_LTV);
+    require(ltv <= MAX_VALID_LTV, Errors.INVALID_LTV); // 小于2^16  不然会越界
 
-    self.data = (self.data & LTV_MASK) | ltv;
+    self.data = (self.data & LTV_MASK) | ltv; // 1&1 = 1   1|0 = 1  先清除 再写入
   }
 
   /**
@@ -81,6 +86,7 @@ library ReserveConfiguration {
    * @param self The reserve configuration
    * @return The loan to value
    */
+  // 获取 LTV  1&1 = 1  ～1 = 0   掩码真厉害
   function getLtv(DataTypes.ReserveConfigurationMap memory self) internal pure returns (uint256) {
     return self.data & ~LTV_MASK;
   }
@@ -90,12 +96,14 @@ library ReserveConfiguration {
    * @param self The reserve configuration
    * @param threshold The new liquidation threshold
    */
+  // 清算阈值  这里要左移操作
   function setLiquidationThreshold(
     DataTypes.ReserveConfigurationMap memory self,
     uint256 threshold
   ) internal pure {
     require(threshold <= MAX_VALID_LIQUIDATION_THRESHOLD, Errors.INVALID_LIQ_THRESHOLD);
 
+    // 第一部分 清除目标区域   第二部分 左移 和第一部分对齐  然后进行 或运算 写入
     self.data =
       (self.data & LIQUIDATION_THRESHOLD_MASK) |
       (threshold << LIQUIDATION_THRESHOLD_START_BIT_POSITION);
@@ -106,6 +114,7 @@ library ReserveConfiguration {
    * @param self The reserve configuration
    * @return The liquidation threshold
    */
+  // 先获取 异与运算拿到目标值  再右移
   function getLiquidationThreshold(
     DataTypes.ReserveConfigurationMap memory self
   ) internal pure returns (uint256) {
@@ -169,6 +178,7 @@ library ReserveConfiguration {
    * @param self The reserve configuration
    * @param active The active state
    */
+  // 这里稍微不一样  是一个bool值  转换了一下
   function setActive(DataTypes.ReserveConfigurationMap memory self, bool active) internal pure {
     self.data =
       (self.data & ACTIVE_MASK) |
@@ -558,6 +568,7 @@ library ReserveConfiguration {
   ) internal pure returns (bool, bool, bool, bool, bool) {
     uint256 dataLocal = self.data;
 
+    // 不知道用汇编来写会不会更节省gas  可能不直观
     return (
       (dataLocal & ~ACTIVE_MASK) != 0,
       (dataLocal & ~FROZEN_MASK) != 0,

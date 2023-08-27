@@ -38,7 +38,7 @@ library DataTypes {
     uint128 isolationModeTotalDebt;
   }
 
-  // 池子的参数  全放在一个slot里面 
+  // 池子的参数  全放在一个slot里面   从 bit 0 开始 到255 结束  牛 
   struct ReserveConfigurationMap {
     //bit 0-15: LTV
     //bit 16-31: Liq. threshold

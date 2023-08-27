@@ -25,12 +25,14 @@ interface IPoolDataProvider {
    * @dev Handling MKR and ETH in a different way since they do not have standard `symbol` functions.
    * @return The list of reserves, pairs of symbols and addresses
    */
+  // 当前池子存在的资产列表
   function getAllReservesTokens() external view returns (TokenData[] memory);
 
   /**
    * @notice Returns the list of the existing ATokens in the pool.
    * @return The list of ATokens, pairs of symbols and addresses
    */
+  // 当前池子的AToken列表
   function getAllATokens() external view returns (TokenData[] memory);
 
   /**
@@ -48,6 +50,7 @@ interface IPoolDataProvider {
    * @return isActive True if it is active, false otherwise
    * @return isFrozen True if it is frozen, false otherwise
    */
+  // 获取资产配置信息
   function getReserveConfigurationData(
     address asset
   )
@@ -71,6 +74,7 @@ interface IPoolDataProvider {
    * @param asset The address of the underlying asset of the reserve
    * @return The eMode id of the reserve
    */
+  // 获取资产的eMode类别
   function getReserveEModeCategory(address asset) external view returns (uint256);
 
   /**
@@ -79,6 +83,7 @@ interface IPoolDataProvider {
    * @return borrowCap The borrow cap of the reserve
    * @return supplyCap The supply cap of the reserve
    */
+  // 获取资产上限  包括 借款和贷款
   function getReserveCaps(
     address asset
   ) external view returns (uint256 borrowCap, uint256 supplyCap);
@@ -88,6 +93,7 @@ interface IPoolDataProvider {
    * @param asset The address of the underlying asset of the reserve
    * @return isPaused True if the pool is paused, false otherwise
    */
+  // 获取池子是否暂停
   function getPaused(address asset) external view returns (bool isPaused);
 
   /**
@@ -95,6 +101,7 @@ interface IPoolDataProvider {
    * @param asset The address of the underlying asset of the reserve
    * @return True if the asset is siloed for borrowing
    */
+  // 如果资产被孤立用于借贷  就是risk不一样
   function getSiloedBorrowing(address asset) external view returns (bool);
 
   /**
@@ -102,6 +109,7 @@ interface IPoolDataProvider {
    * @param asset The address of the underlying asset of the reserve
    * @return The protocol fee on liquidation
    */
+  // 获取清算协议费率
   function getLiquidationProtocolFee(address asset) external view returns (uint256);
 
   /**
@@ -109,6 +117,7 @@ interface IPoolDataProvider {
    * @param asset The address of the underlying asset of the reserve
    * @return The unbacked mint cap of the reserve
    */
+  // 获取 无担保资金 mint 上限
   function getUnbackedMintCap(address asset) external view returns (uint256);
 
   /**
@@ -116,12 +125,14 @@ interface IPoolDataProvider {
    * @param asset The address of the underlying asset of the reserve
    * @return The debt ceiling of the reserve
    */
+  // 债务上限
   function getDebtCeiling(address asset) external view returns (uint256);
 
   /**
    * @notice Returns the debt ceiling decimals
    * @return The debt ceiling decimals
    */
+  // 债务上限的精度
   function getDebtCeilingDecimals() external pure returns (uint256);
 
   /**
@@ -140,6 +151,7 @@ interface IPoolDataProvider {
    * @return variableBorrowIndex The variable borrow index of the reserve
    * @return lastUpdateTimestamp The timestamp of the last update of the reserve
    */
+  // 获取资产数据 aToken 稳定利率债务 流动利率债务 清算率 稳定借贷利率 流动借贷利率 平均稳定借贷利率
   function getReserveData(
     address asset
   )
@@ -165,6 +177,7 @@ interface IPoolDataProvider {
    * @param asset The address of the underlying asset of the reserve
    * @return The total supply of the aToken
    */
+  // aToken总供应量
   function getATokenTotalSupply(address asset) external view returns (uint256);
 
   /**
@@ -172,6 +185,7 @@ interface IPoolDataProvider {
    * @param asset The address of the underlying asset of the reserve
    * @return The total debt for asset
    */
+  // 总债务
   function getTotalDebt(address asset) external view returns (uint256);
 
   /**
@@ -189,6 +203,7 @@ interface IPoolDataProvider {
    * @return usageAsCollateralEnabled True if the user is using the asset as collateral, false
    *         otherwise
    */
+  // 用户资产数据  aToken余额  稳定债务  浮动债务  借贷率  清算率  时间戳 是否使用资产作为抵押
   function getUserReserveData(
     address asset,
     address user
@@ -214,6 +229,7 @@ interface IPoolDataProvider {
    * @return stableDebtTokenAddress The StableDebtToken address of the reserve
    * @return variableDebtTokenAddress The VariableDebtToken address of the reserve
    */
+  // 返回 aToken 稳定债务Token 浮动债务Token的地址  这是一对一的嘛？
   function getReserveTokensAddresses(
     address asset
   )
@@ -230,6 +246,7 @@ interface IPoolDataProvider {
    * @param asset The address of the underlying asset of the reserve
    * @return irStrategyAddress The address of the Interest Rate strategy
    */
+  // 利率策略制定者地址
   function getInterestRateStrategyAddress(
     address asset
   ) external view returns (address irStrategyAddress);
@@ -239,5 +256,6 @@ interface IPoolDataProvider {
    * @param asset The address of the underlying asset of the reserve
    * @return True if FlashLoans are enabled, false otherwise
    */
+  // 是否开启了闪电贷
   function getFlashLoanEnabled(address asset) external view returns (bool);
 }

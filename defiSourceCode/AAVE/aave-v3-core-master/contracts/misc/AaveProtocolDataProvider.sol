@@ -2,7 +2,7 @@
 pragma solidity 0.8.10;
 
 import {IERC20Detailed} from '../dependencies/openzeppelin/contracts/IERC20Detailed.sol';
-import {ReserveConfiguration} from '../protocol/libraries/configuration/ReserveConfiguration.sol';
+import {ReserveConfiguration} from '../protocol/libraries/configuration/ReserveConfiguration.sol'; // 掩码表
 import {UserConfiguration} from '../protocol/libraries/configuration/UserConfiguration.sol';
 import {DataTypes} from '../protocol/libraries/types/DataTypes.sol';
 import {WadRayMath} from '../protocol/libraries/math/WadRayMath.sol';
