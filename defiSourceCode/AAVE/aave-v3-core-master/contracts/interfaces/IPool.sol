@@ -9,6 +9,8 @@ import {DataTypes} from '../protocol/libraries/types/DataTypes.sol';
  * @author Aave
  * @notice Defines the basic interface for an Aave Pool.
  */
+// 池子的基本接口
+// unbacked underlying 无担保标的    underlying asset 标的资产
 interface IPool {
   /**
    * @dev Emitted on mintUnbacked()
@@ -18,6 +20,7 @@ interface IPool {
    * @param amount The amount of supplied assets
    * @param referralCode The referral code used
    */
+  // 用无担保标的去抵押
   event MintUnbacked(
     address indexed reserve,
     address user,
@@ -33,6 +36,7 @@ interface IPool {
    * @param amount The amount added as backing
    * @param fee The amount paid in fees
    */
+  // 取钱  拿回无担保标的资产
   event BackUnbacked(address indexed reserve, address indexed backer, uint256 amount, uint256 fee);
 
   /**
@@ -43,6 +47,7 @@ interface IPool {
    * @param amount The amount supplied
    * @param referralCode The referral code used
    */
+  // 抵押标的
   event Supply(
     address indexed reserve,
     address user,
@@ -58,6 +63,7 @@ interface IPool {
    * @param to The address that will receive the underlying
    * @param amount The amount to be withdrawn
    */
+  // 取钱
   event Withdraw(address indexed reserve, address indexed user, address indexed to, uint256 amount);
 
   /**
@@ -71,6 +77,7 @@ interface IPool {
    * @param borrowRate The numeric rate at which the user has borrowed, expressed in ray
    * @param referralCode The referral code used
    */
+  // 借钱
   event Borrow(
     address indexed reserve,
     address user,
@@ -89,6 +96,7 @@ interface IPool {
    * @param amount The amount repaid
    * @param useATokens True if the repayment is done using aTokens, `false` if done with underlying asset directly
    */
+  // 还钱
   event Repay(
     address indexed reserve,
     address indexed user,
@@ -103,6 +111,7 @@ interface IPool {
    * @param user The address of the user swapping his rate mode
    * @param interestRateMode The current interest rate mode of the position being swapped: 1 for Stable, 2 for Variable
    */
+  // 互换借贷利率模式
   event SwapBorrowRateMode(
     address indexed reserve,
     address indexed user,
@@ -114,6 +123,7 @@ interface IPool {
    * @param asset The address of the underlying asset of the reserve
    * @param totalDebt The total isolation mode debt for the reserve
    */
+  // 隔离模式 总债务更新事件
   event IsolationModeTotalDebtUpdated(address indexed asset, uint256 totalDebt);
 
   /**
@@ -121,6 +131,7 @@ interface IPool {
    * @param user The address of the user
    * @param categoryId The category id
    */
+  // 用户设置 EMode 模式
   event UserEModeSet(address indexed user, uint8 categoryId);
 
   /**
@@ -128,6 +139,7 @@ interface IPool {
    * @param reserve The address of the underlying asset of the reserve
    * @param user The address of the user enabling the usage as collateral
    */
+  // 用户设置抵押
   event ReserveUsedAsCollateralEnabled(address indexed reserve, address indexed user);
 
   /**
@@ -135,6 +147,7 @@ interface IPool {
    * @param reserve The address of the underlying asset of the reserve
    * @param user The address of the user enabling the usage as collateral
    */
+  // 用户取消抵押
   event ReserveUsedAsCollateralDisabled(address indexed reserve, address indexed user);
 
   /**
@@ -142,6 +155,7 @@ interface IPool {
    * @param reserve The address of the underlying asset of the reserve
    * @param user The address of the user for which the rebalance has been executed
    */
+  // 用户调整 稳定借贷利率
   event RebalanceStableBorrowRate(address indexed reserve, address indexed user);
 
   /**
@@ -154,6 +168,7 @@ interface IPool {
    * @param premium The fee flash borrowed
    * @param referralCode The referral code used
    */
+  // 闪电贷
   event FlashLoan(
     address indexed target,
     address initiator,
@@ -175,6 +190,7 @@ interface IPool {
    * @param receiveAToken True if the liquidators wants to receive the collateral aTokens, `false` if he wants
    * to receive the underlying collateral asset directly
    */
+  // 清算
   event LiquidationCall(
     address indexed collateralAsset,
     address indexed debtAsset,
@@ -194,6 +210,7 @@ interface IPool {
    * @param liquidityIndex The next liquidity index
    * @param variableBorrowIndex The next variable borrow index
    */
+  // reserve数据更新
   event ReserveDataUpdated(
     address indexed reserve,
     uint256 liquidityRate,
@@ -208,6 +225,7 @@ interface IPool {
    * @param reserve The address of the reserve
    * @param amountMinted The amount minted to the treasury
    */
+  // 收到利息收益
   event MintedToTreasury(address indexed reserve, uint256 amountMinted);
 
   /**
@@ -218,6 +236,7 @@ interface IPool {
    * @param referralCode Code used to register the integrator originating the operation, for potential rewards.
    *   0 if the action is executed directly by the user, without any middle-man
    */
+  // mint aToken 给 onBehalfOf
   function mintUnbacked(
     address asset,
     uint256 amount,
@@ -232,6 +251,8 @@ interface IPool {
    * @param fee The amount paid in fees
    * @return The backed amount
    */
+  // unbacked underlying 无担保标的    underlying asset 标的资产
+  // 返回当前无担保标的 并且付费
   function backUnbacked(address asset, uint256 amount, uint256 fee) external returns (uint256);
 
   /**
@@ -245,6 +266,7 @@ interface IPool {
    * @param referralCode Code used to register the integrator originating the operation, for potential rewards.
    *   0 if the action is executed directly by the user, without any middle-man
    */
+  // 抵押100USDC 得到 100个 aUSDC
   function supply(address asset, uint256 amount, address onBehalfOf, uint16 referralCode) external;
 
   /**
@@ -262,6 +284,7 @@ interface IPool {
    * @param permitR The R parameter of ERC712 permit sig
    * @param permitS The S parameter of ERC712 permit sig
    */
+  // 根据协议 EIP-713 可让别人用私钥签名 授权给你去操作这笔钱 然后去质押
   function supplyWithPermit(
     address asset,
     uint256 amount,
@@ -284,6 +307,7 @@ interface IPool {
    *   different wallet
    * @return The final amount withdrawn
    */
+  // 取钱
   function withdraw(address asset, uint256 amount, address to) external returns (uint256);
 
   /**
@@ -301,6 +325,7 @@ interface IPool {
    * calling the function if he wants to borrow against his own collateral, or the address of the credit delegator
    * if he has been given credit delegation allowance
    */
+  //借钱
   function borrow(
     address asset,
     uint256 amount,
@@ -321,6 +346,7 @@ interface IPool {
    * other borrower whose debt should be removed
    * @return The final amount repaid
    */
+  // 还钱
   function repay(
     address asset,
     uint256 amount,
@@ -344,6 +370,7 @@ interface IPool {
    * @param permitS The S parameter of ERC712 permit sig
    * @return The final amount repaid
    */
+  // 根据协议 EIP-713 可让别人用私钥签名 授权给你去操作这笔钱 然后去还钱
   function repayWithPermit(
     address asset,
     uint256 amount,
@@ -367,6 +394,7 @@ interface IPool {
    * @param interestRateMode The interest rate mode at of the debt the user wants to repay: 1 for Stable, 2 for Variable
    * @return The final amount repaid
    */
+  // 用aToken 还钱
   function repayWithATokens(
     address asset,
     uint256 amount,
@@ -378,6 +406,7 @@ interface IPool {
    * @param asset The address of the underlying asset borrowed
    * @param interestRateMode The current interest rate mode of the position being swapped: 1 for Stable, 2 for Variable
    */
+  // 允许用户在稳定和浮动模式下互换债务
   function swapBorrowRateMode(address asset, uint256 interestRateMode) external;
 
   /**
@@ -389,6 +418,7 @@ interface IPool {
    * @param asset The address of the underlying asset borrowed
    * @param user The address of the user to be rebalanced
    */
+  // 调整用户的稳定利率
   function rebalanceStableBorrowRate(address asset, address user) external;
 
   /**
@@ -396,6 +426,7 @@ interface IPool {
    * @param asset The address of the underlying asset supplied
    * @param useAsCollateral True if the user wants to use the supply as collateral, false otherwise
    */
+  // 允许LP 启用/禁用 某一个资产去抵押
   function setUserUseReserveAsCollateral(address asset, bool useAsCollateral) external;
 
   /**
@@ -409,6 +440,7 @@ interface IPool {
    * @param receiveAToken True if the liquidators wants to receive the collateral aTokens, `false` if he wants
    * to receive the underlying collateral asset directly
    */
+  // 清算 不健康的仓位
   function liquidationCall(
     address collateralAsset,
     address debtAsset,
@@ -434,6 +466,7 @@ interface IPool {
    * @param referralCode The code used to register the integrator originating the operation, for potential rewards.
    *   0 if the action is executed directly by the user, without any middle-man
    */
+  // 闪电贷  可以借多种资产
   function flashLoan(
     address receiverAddress,
     address[] calldata assets,
@@ -456,6 +489,7 @@ interface IPool {
    * @param referralCode The code used to register the integrator originating the operation, for potential rewards.
    *   0 if the action is executed directly by the user, without any middle-man
    */
+  // 闪电贷 只借一种资产
   function flashLoanSimple(
     address receiverAddress,
     address asset,
@@ -474,6 +508,7 @@ interface IPool {
    * @return ltv The loan to value of The user
    * @return healthFactor The current health factor of the user
    */
+  // 返回用户的账户数据
   function getUserAccountData(
     address user
   )
@@ -498,6 +533,7 @@ interface IPool {
    * @param variableDebtAddress The address of the VariableDebtToken that will be assigned to the reserve
    * @param interestRateStrategyAddress The address of the interest rate strategy contract
    */
+  // 初始化储蓄
   function initReserve(
     address asset,
     address aTokenAddress,
@@ -511,6 +547,7 @@ interface IPool {
    * @dev Only callable by the PoolConfigurator contract
    * @param asset The address of the underlying asset of the reserve
    */
+  // 删除储蓄
   function dropReserve(address asset) external;
 
   /**
@@ -519,6 +556,7 @@ interface IPool {
    * @param asset The address of the underlying asset of the reserve
    * @param rateStrategyAddress The address of the interest rate strategy contract
    */
+  // 更新利率策略
   function setReserveInterestRateStrategyAddress(
     address asset,
     address rateStrategyAddress
@@ -530,6 +568,7 @@ interface IPool {
    * @param asset The address of the underlying asset of the reserve
    * @param configuration The new configuration bitmap
    */
+  // 设置配置
   function setConfiguration(
     address asset,
     DataTypes.ReserveConfigurationMap calldata configuration
@@ -540,6 +579,7 @@ interface IPool {
    * @param asset The address of the underlying asset of the reserve
    * @return The configuration of the reserve
    */
+  // 返回配置
   function getConfiguration(
     address asset
   ) external view returns (DataTypes.ReserveConfigurationMap memory);
@@ -549,6 +589,7 @@ interface IPool {
    * @param user The user address
    * @return The configuration of the user
    */
+  // 返回用户的配置
   function getUserConfiguration(
     address user
   ) external view returns (DataTypes.UserConfigurationMap memory);
@@ -558,6 +599,7 @@ interface IPool {
    * @param asset The address of the underlying asset of the reserve
    * @return The reserve's normalized income
    */
+  // 返回储蓄的归一化收益
   function getReserveNormalizedIncome(address asset) external view returns (uint256);
 
   /**
@@ -572,6 +614,7 @@ interface IPool {
    * @param asset The address of the underlying asset of the reserve
    * @return The reserve normalized variable debt
    */
+  // 返回储蓄的归一化可变债务
   function getReserveNormalizedVariableDebt(address asset) external view returns (uint256);
 
   /**
@@ -579,6 +622,7 @@ interface IPool {
    * @param asset The address of the underlying asset of the reserve
    * @return The state and configuration data of the reserve
    */
+  // 返回储蓄的状态和配置
   function getReserveData(address asset) external view returns (DataTypes.ReserveData memory);
 
   /**
@@ -591,6 +635,7 @@ interface IPool {
    * @param balanceFromBefore The aToken balance of the `from` user before the transfer
    * @param balanceToBefore The aToken balance of the `to` user before the transfer
    */
+  // 验证并完成aToken转移
   function finalizeTransfer(
     address asset,
     address from,
@@ -605,6 +650,7 @@ interface IPool {
    * @dev It does not include dropped reserves
    * @return The addresses of the underlying assets of the initialized reserves
    */
+  // 返回所有初始化的储蓄的资产集合
   function getReservesList() external view returns (address[] memory);
 
   /**
@@ -612,18 +658,21 @@ interface IPool {
    * @param id The id of the reserve as stored in the DataTypes.ReserveData struct
    * @return The address of the reserve associated with id
    */
+  // 通过ID返回储蓄的资产
   function getReserveAddressById(uint16 id) external view returns (address);
 
   /**
    * @notice Returns the PoolAddressesProvider connected to this contract
    * @return The address of the PoolAddressesProvider
    */
+  // 返回 PoolAddressesProvider 地址
   function ADDRESSES_PROVIDER() external view returns (IPoolAddressesProvider);
 
   /**
    * @notice Updates the protocol fee on the bridging
    * @param bridgeProtocolFee The part of the premium sent to the protocol treasury
    */
+  // 更新桥的协议费
   function updateBridgeProtocolFee(uint256 bridgeProtocolFee) external;
 
   /**
@@ -636,6 +685,7 @@ interface IPool {
    * @param flashLoanPremiumTotal The total premium, expressed in bps
    * @param flashLoanPremiumToProtocol The part of the premium sent to the protocol treasury, expressed in bps
    */
+  // 更新闪电贷保证金  俩部分: 利息给LP, 协议金库
   function updateFlashloanPremiums(
     uint128 flashLoanPremiumTotal,
     uint128 flashLoanPremiumToProtocol
@@ -648,6 +698,7 @@ interface IPool {
    * @param id The id of the category
    * @param config The configuration of the category
    */
+  // 配置新的eMode
   function configureEModeCategory(uint8 id, DataTypes.EModeCategory memory config) external;
 
   /**
@@ -655,12 +706,14 @@ interface IPool {
    * @param id The id of the category
    * @return The configuration data of the category
    */
+  // 返回eMode的配置
   function getEModeCategoryData(uint8 id) external view returns (DataTypes.EModeCategory memory);
 
   /**
    * @notice Allows a user to use the protocol in eMode
    * @param categoryId The id of the category
    */
+  // 允许用户使用eMode
   function setUserEMode(uint8 categoryId) external;
 
   /**
@@ -675,42 +728,49 @@ interface IPool {
    * @dev It requires the given asset has zero debt ceiling
    * @param asset The address of the underlying asset to reset the isolationModeTotalDebt
    */
+  // 重置储蓄的 隔离模式 总债务
   function resetIsolationModeTotalDebt(address asset) external;
 
   /**
    * @notice Returns the percentage of available liquidity that can be borrowed at once at stable rate
    * @return The percentage of available liquidity to borrow, expressed in bps
    */
+  // 稳定利率下 最大可借出去多少 百分比
   function MAX_STABLE_RATE_BORROW_SIZE_PERCENT() external view returns (uint256);
 
   /**
    * @notice Returns the total fee on flash loans
    * @return The total fee on flashloans
    */
+  // 闪电贷总的手续费
   function FLASHLOAN_PREMIUM_TOTAL() external view returns (uint128);
 
   /**
    * @notice Returns the part of the bridge fees sent to protocol
    * @return The bridge fee sent to the protocol treasury
    */
+  // 桥的协议费
   function BRIDGE_PROTOCOL_FEE() external view returns (uint256);
 
   /**
    * @notice Returns the part of the flashloan fees sent to protocol
    * @return The flashloan fee sent to the protocol treasury
    */
+  // 闪电贷协议费-发送给协议的金库
   function FLASHLOAN_PREMIUM_TO_PROTOCOL() external view returns (uint128);
 
   /**
    * @notice Returns the maximum number of reserves supported to be listed in this Pool
    * @return The maximum number of reserves supported
    */
+  // 池子最大支持的储蓄数量  好像是 127
   function MAX_NUMBER_RESERVES() external view returns (uint16);
 
   /**
    * @notice Mints the assets accrued through the reserve factor to the treasury in the form of aTokens
    * @param assets The list of reserves for which the minting needs to be executed
    */
+  //
   function mintToTreasury(address[] calldata assets) external;
 
   /**
@@ -733,5 +793,6 @@ interface IPool {
    * @param referralCode Code used to register the integrator originating the operation, for potential rewards.
    *   0 if the action is executed directly by the user, without any middle-man
    */
+  // 存钱
   function deposit(address asset, uint256 amount, address onBehalfOf, uint16 referralCode) external;
 }

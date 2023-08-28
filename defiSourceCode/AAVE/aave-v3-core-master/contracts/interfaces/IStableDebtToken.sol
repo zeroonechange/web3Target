@@ -9,6 +9,7 @@ import {IInitializableDebtToken} from './IInitializableDebtToken.sol';
  * @notice Defines the interface for the stable debt token
  * @dev It does not inherit from IERC20 to save in code size
  */
+// 债务稳定币aToken  并不是继承自 IERC20
 interface IStableDebtToken is IInitializableDebtToken {
   /**
    * @dev Emitted when new stable debt is minted
@@ -21,6 +22,7 @@ interface IStableDebtToken is IInitializableDebtToken {
    * @param avgStableRate The next average stable rate after the minting
    * @param newTotalSupply The next total supply of the stable debt token after the action
    */
+  // 债务被发行
   event Mint(
     address indexed user,
     address indexed onBehalfOf,
@@ -41,6 +43,7 @@ interface IStableDebtToken is IInitializableDebtToken {
    * @param avgStableRate The next average stable rate after the burning
    * @param newTotalSupply The next total supply of the stable debt token after the action
    */
+  // 债务被销毁
   event Burn(
     address indexed from,
     uint256 amount,
@@ -87,6 +90,7 @@ interface IStableDebtToken is IInitializableDebtToken {
    * @notice Returns the average rate of all the stable rate loans.
    * @return The average stable rate
    */
+  // 平均稳定利率
   function getAverageStableRate() external view returns (uint256);
 
   /**
@@ -94,6 +98,7 @@ interface IStableDebtToken is IInitializableDebtToken {
    * @param user The address of the user
    * @return The stable rate of the user
    */
+  // 用户的稳定利率
   function getUserStableRate(address user) external view returns (uint256);
 
   /**
@@ -101,6 +106,7 @@ interface IStableDebtToken is IInitializableDebtToken {
    * @param user The address of the user
    * @return The timestamp
    */
+  // 最后更新
   function getUserLastUpdated(address user) external view returns (uint40);
 
   /**
@@ -110,6 +116,7 @@ interface IStableDebtToken is IInitializableDebtToken {
    * @return The average stable rate
    * @return The timestamp of the last update
    */
+  // 供给数据  主要  总供给  平均稳定利率  最后更新时间戳
   function getSupplyData() external view returns (uint256, uint256, uint256, uint40);
 
   /**
@@ -129,11 +136,13 @@ interface IStableDebtToken is IInitializableDebtToken {
    * @notice Returns the principal debt balance of the user
    * @return The debt balance of the user since the last burn/mint action
    */
+  // 主要余额
   function principalBalanceOf(address user) external view returns (uint256);
 
   /**
    * @notice Returns the address of the underlying asset of this stableDebtToken (E.g. WETH for stableDebtWETH)
    * @return The address of the underlying asset
    */
+  // 标的资产
   function UNDERLYING_ASSET_ADDRESS() external view returns (address);
 }

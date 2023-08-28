@@ -6,6 +6,7 @@ pragma solidity ^0.8.0;
  * @author Aave
  * @notice Defines the basic interface for a scaled-balance token.
  */
+// scaled-balance token   scaled: 缩放 自由浮动
 interface IScaledBalanceToken {
   /**
    * @dev Emitted after the mint action
@@ -47,6 +48,7 @@ interface IScaledBalanceToken {
    * @param user The user whose balance is calculated
    * @return The scaled balance of the user
    */
+  // 用户余额
   function scaledBalanceOf(address user) external view returns (uint256);
 
   /**
@@ -55,12 +57,14 @@ interface IScaledBalanceToken {
    * @return The scaled balance of the user
    * @return The scaled total supply
    */
+  // 用户余额 和 总供应
   function getScaledUserBalanceAndSupply(address user) external view returns (uint256, uint256);
 
   /**
    * @notice Returns the scaled total supply of the scaled balance token. Represents sum(debt/index)
    * @return The scaled total supply
    */
+  // 总供应
   function scaledTotalSupply() external view returns (uint256);
 
   /**
@@ -68,5 +72,6 @@ interface IScaledBalanceToken {
    * @param user The address of the user
    * @return The last index interest was accrued to the user's balance, expressed in ray
    */
+  // 上次利息被累计到用户的余额
   function getPreviousIndex(address user) external view returns (uint256);
 }

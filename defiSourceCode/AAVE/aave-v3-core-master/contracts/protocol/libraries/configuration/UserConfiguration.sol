@@ -10,7 +10,7 @@ import {ReserveConfiguration} from './ReserveConfiguration.sol';
  * @author Aave
  * @notice Implements the bitmap logic to handle the user configuration
  */
-// 位图逻辑？ 用户配置
+//用户配置用位图来存储   比如 001101  这里有3对  存储了三种token的情况   奇数位=1是抵押 偶数位=1是借贷
 library UserConfiguration {
   using ReserveConfiguration for DataTypes.ReserveConfigurationMap; // 一个slot 放了池子的全部参数
 

@@ -6,12 +6,14 @@ pragma solidity ^0.8.0;
  * @author Aave
  * @notice Defines the basic interface for a Pool Addresses Provider.
  */
+// 接口  规定了协议数据提供者的主要功能  把各个功能都分散到不同的合约里面去了
 interface IPoolAddressesProvider {
   /**
    * @dev Emitted when the market identifier is updated.
    * @param oldMarketId The old id of the market
    * @param newMarketId The new id of the market
    */
+  // marketId 更新事件
   event MarketIdSet(string indexed oldMarketId, string indexed newMarketId);
 
   /**
@@ -19,6 +21,7 @@ interface IPoolAddressesProvider {
    * @param oldAddress The old address of the Pool
    * @param newAddress The new address of the Pool
    */
+  // pool 更新事件
   event PoolUpdated(address indexed oldAddress, address indexed newAddress);
 
   /**
@@ -26,6 +29,7 @@ interface IPoolAddressesProvider {
    * @param oldAddress The old address of the PoolConfigurator
    * @param newAddress The new address of the PoolConfigurator
    */
+  // pool配置 更新事件
   event PoolConfiguratorUpdated(address indexed oldAddress, address indexed newAddress);
 
   /**
@@ -33,6 +37,7 @@ interface IPoolAddressesProvider {
    * @param oldAddress The old address of the PriceOracle
    * @param newAddress The new address of the PriceOracle
    */
+  // 价格预言机  更新事件
   event PriceOracleUpdated(address indexed oldAddress, address indexed newAddress);
 
   /**
@@ -40,6 +45,7 @@ interface IPoolAddressesProvider {
    * @param oldAddress The old address of the ACLManager
    * @param newAddress The new address of the ACLManager
    */
+  // 权限控制  更新事件
   event ACLManagerUpdated(address indexed oldAddress, address indexed newAddress);
 
   /**
@@ -47,6 +53,7 @@ interface IPoolAddressesProvider {
    * @param oldAddress The old address of the ACLAdmin
    * @param newAddress The new address of the ACLAdmin
    */
+  // 权限控制管理员  更新事件
   event ACLAdminUpdated(address indexed oldAddress, address indexed newAddress);
 
   /**
@@ -54,6 +61,7 @@ interface IPoolAddressesProvider {
    * @param oldAddress The old address of the PriceOracleSentinel
    * @param newAddress The new address of the PriceOracleSentinel
    */
+  // 价格预言机哨兵  更新事件
   event PriceOracleSentinelUpdated(address indexed oldAddress, address indexed newAddress);
 
   /**
@@ -61,6 +69,7 @@ interface IPoolAddressesProvider {
    * @param oldAddress The old address of the PoolDataProvider
    * @param newAddress The new address of the PoolDataProvider
    */
+  // 池子数据提供者  更新事件
   event PoolDataProviderUpdated(address indexed oldAddress, address indexed newAddress);
 
   /**
@@ -69,6 +78,7 @@ interface IPoolAddressesProvider {
    * @param proxyAddress The address of the created proxy contract
    * @param implementationAddress The address of the implementation contract
    */
+  // 代理创建事件
   event ProxyCreated(
     bytes32 indexed id,
     address indexed proxyAddress,
@@ -81,6 +91,7 @@ interface IPoolAddressesProvider {
    * @param oldAddress The address of the old contract
    * @param newAddress The address of the new contract
    */
+  // 一个新的非代理合约地址被注册事件
   event AddressSet(bytes32 indexed id, address indexed oldAddress, address indexed newAddress);
 
   /**
@@ -90,6 +101,7 @@ interface IPoolAddressesProvider {
    * @param oldImplementationAddress The address of the old implementation contract
    * @param newImplementationAddress The address of the new implementation contract
    */
+  // 代理合约的实现地址被更新
   event AddressSetAsProxy(
     bytes32 indexed id,
     address indexed proxyAddress,
