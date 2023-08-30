@@ -18,6 +18,7 @@ contract PriceOracleSentinel is IPriceOracleSentinel {
   /**
    * @dev Only pool admin can call functions marked by this modifier.
    */
+  // 通过 AclManager 来确定是否是admin
   modifier onlyPoolAdmin() {
     IACLManager aclManager = IACLManager(ADDRESSES_PROVIDER.getACLManager());
     require(aclManager.isPoolAdmin(msg.sender), Errors.CALLER_NOT_POOL_ADMIN);
@@ -55,11 +56,13 @@ contract PriceOracleSentinel is IPriceOracleSentinel {
   }
 
   /// @inheritdoc IPriceOracleSentinel
+  // 是否过了宽限期
   function isBorrowAllowed() public view override returns (bool) {
     return _isUpAndGracePeriodPassed();
   }
 
   /// @inheritdoc IPriceOracleSentinel
+  // 是否过了宽限期
   function isLiquidationAllowed() public view override returns (bool) {
     return _isUpAndGracePeriodPassed();
   }
@@ -68,18 +71,21 @@ contract PriceOracleSentinel is IPriceOracleSentinel {
    * @notice Checks the sequencer oracle is healthy: is up and grace period passed.
    * @return True if the SequencerOracle is up and the grace period passed, false otherwise
    */
+  // 是否健康  越过了 grace period  宽限期
   function _isUpAndGracePeriodPassed() internal view returns (bool) {
     (, int256 answer, , uint256 lastUpdateTimestamp, ) = _sequencerOracle.latestRoundData();
     return answer == 0 && block.timestamp - lastUpdateTimestamp > _gracePeriod;
   }
 
   /// @inheritdoc IPriceOracleSentinel
+  // 设置方法
   function setSequencerOracle(address newSequencerOracle) public onlyPoolAdmin {
     _sequencerOracle = ISequencerOracle(newSequencerOracle);
     emit SequencerOracleUpdated(newSequencerOracle);
   }
 
   /// @inheritdoc IPriceOracleSentinel
+  // 设置方法
   function setGracePeriod(uint256 newGracePeriod) public onlyRiskOrPoolAdmins {
     _gracePeriod = newGracePeriod;
     emit GracePeriodUpdated(newGracePeriod);
