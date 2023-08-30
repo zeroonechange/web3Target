@@ -12,15 +12,16 @@ import {IPoolAddressesProviderRegistry} from '../../interfaces/IPoolAddressesPro
  * @dev Used for indexing purposes of Aave protocol's markets. The id assigned to a PoolAddressesProvider refers to the
  * market it is connected with, for example with `1` for the Aave main market and `2` for the next created.
  */
+// 创建 market 按顺序来 1 2 3 实操 AddressesProvider     这个合约地址永不变
 contract PoolAddressesProviderRegistry is Ownable, IPoolAddressesProviderRegistry {
   // Map of address provider ids (addressesProvider => id)
-  mapping(address => uint256) private _addressesProviderToId;
+  mapping(address => uint256) private _addressesProviderToId; // 搞俩个  来进行转换  6
   // Map of id to address provider (id => addressesProvider)
   mapping(uint256 => address) private _idToAddressesProvider;
   // List of addresses providers
-  address[] private _addressesProvidersList;
+  address[] private _addressesProvidersList; // 还弄一个集合勒
   // Map of address provider list indexes (addressesProvider => indexInList)
-  mapping(address => uint256) private _addressesProvidersIndexes;
+  mapping(address => uint256) private _addressesProvidersIndexes; // 索引?  也是
 
   /**
    * @dev Constructor.

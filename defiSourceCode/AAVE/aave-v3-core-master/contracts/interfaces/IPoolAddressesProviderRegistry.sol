@@ -12,6 +12,7 @@ interface IPoolAddressesProviderRegistry {
    * @param addressesProvider The address of the registered PoolAddressesProvider
    * @param id The id of the registered PoolAddressesProvider
    */
+  // 注册一个新的 PoolAddressesProvider
   event AddressesProviderRegistered(address indexed addressesProvider, uint256 indexed id);
 
   /**
@@ -19,6 +20,7 @@ interface IPoolAddressesProviderRegistry {
    * @param addressesProvider The address of the unregistered PoolAddressesProvider
    * @param id The id of the unregistered PoolAddressesProvider
    */
+  // 取消注册一个 PoolAddressesProvider
   event AddressesProviderUnregistered(address indexed addressesProvider, uint256 indexed id);
 
   /**
@@ -32,6 +34,7 @@ interface IPoolAddressesProviderRegistry {
    * @param addressesProvider The address of the PoolAddressesProvider
    * @return The id of the PoolAddressesProvider or 0 if is not registered
    */
+  // 通过 address 拿到 PoolAddressesProvider 的 id
   function getAddressesProviderIdByAddress(
     address addressesProvider
   ) external view returns (uint256);
@@ -41,6 +44,7 @@ interface IPoolAddressesProviderRegistry {
    * @param id The id of the market
    * @return The address of the PoolAddressesProvider with the given id or zero address if it is not registered
    */
+  // 通过 id 拿到 PoolAddressesProvider 的 address
   function getAddressesProviderAddressById(uint256 id) external view returns (address);
 
   /**
@@ -50,11 +54,13 @@ interface IPoolAddressesProviderRegistry {
    * @param provider The address of the new PoolAddressesProvider
    * @param id The id for the new PoolAddressesProvider, referring to the market it belongs to
    */
+  // 注册一个新的 PoolAddressesProvider
   function registerAddressesProvider(address provider, uint256 id) external;
 
   /**
    * @notice Removes an addresses provider from the list of registered addresses providers
    * @param provider The PoolAddressesProvider address
    */
+  // 取消注册一个 PoolAddressesProvider
   function unregisterAddressesProvider(address provider) external;
 }
