@@ -17,9 +17,11 @@ contract PoolAddressesProvider is Ownable, IPoolAddressesProvider {
   string private _marketId;
 
   // Map of registered addresses (identifier => registeredAddress)
+  // 这个合约唯一的闪光点
   mapping(bytes32 => address) private _addresses;
 
   // Main identifiers
+  // 和上面的 _addresses配合使用 规定了 POOL ACL_MANAGER 等固定的key
   bytes32 private constant POOL = 'POOL';
   bytes32 private constant POOL_CONFIGURATOR = 'POOL_CONFIGURATOR';
   bytes32 private constant PRICE_ORACLE = 'PRICE_ORACLE';
@@ -34,8 +36,8 @@ contract PoolAddressesProvider is Ownable, IPoolAddressesProvider {
    * @param owner The owner address of this contract.
    */
   constructor(string memory marketId, address owner) {
-    _setMarketId(marketId);
-    transferOwnership(owner);
+    _setMarketId(marketId); // 设置 marketId
+    transferOwnership(owner); // 设置 owner
   }
 
   /// @inheritdoc IPoolAddressesProvider
@@ -49,6 +51,7 @@ contract PoolAddressesProvider is Ownable, IPoolAddressesProvider {
   }
 
   /// @inheritdoc IPoolAddressesProvider
+  // 这个 address 是 协议合约地址  也就是 Pool地址
   function getAddress(bytes32 id) public view override returns (address) {
     return _addresses[id];
   }
@@ -61,6 +64,7 @@ contract PoolAddressesProvider is Ownable, IPoolAddressesProvider {
   }
 
   /// @inheritdoc IPoolAddressesProvider
+  // 设置新的代理合约地址
   function setAddressAsProxy(
     bytes32 id,
     address newImplementationAddress
