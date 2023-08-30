@@ -17,12 +17,12 @@ abstract contract VersionedInitializable {
   /**
    * @dev Indicates that the contract has been initialized.
    */
-  uint256 private lastInitializedRevision = 0;
+  uint256 private lastInitializedRevision = 0; // 已被初始化
 
   /**
    * @dev Indicates that the contract is in the process of being initialized.
    */
-  bool private initializing;
+  bool private initializing; // 正在初始化
 
   /**
    * @dev Modifier to use in the initializer function of a contract.
@@ -58,6 +58,7 @@ abstract contract VersionedInitializable {
    * @notice Returns true if and only if the function is running in the constructor
    * @return True if the function is running in the constructor
    */
+  // 通过汇编去确定是不是构造函数
   function isConstructor() private view returns (bool) {
     // extcodesize checks the size of the code stored in an address, and
     // address returns the current address. Since the code is still not
@@ -67,7 +68,7 @@ abstract contract VersionedInitializable {
     uint256 cs;
     //solium-disable-next-line
     assembly {
-      cs := extcodesize(address())
+      cs := extcodesize(address()) // Get size of an account’s code
     }
     return cs == 0;
   }
