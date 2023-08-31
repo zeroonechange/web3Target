@@ -51,6 +51,8 @@ library ConfiguratorLogic {
     IPool pool,
     ConfiguratorInputTypes.InitReserveInput calldata input
   ) public {
+    // 代理合约    构造abi
+    // 用代理合约初始化aToken
     address aTokenProxyAddress = _initTokenWithProxy(
       input.aTokenImpl,
       abi.encodeWithSelector(
@@ -66,6 +68,7 @@ library ConfiguratorLogic {
       )
     );
 
+    // 用代理合约初始化 stableDebtToken
     address stableDebtTokenProxyAddress = _initTokenWithProxy(
       input.stableDebtTokenImpl,
       abi.encodeWithSelector(
@@ -80,6 +83,7 @@ library ConfiguratorLogic {
       )
     );
 
+    // 用代理合约初始化 variableDebtToken
     address variableDebtTokenProxyAddress = _initTokenWithProxy(
       input.variableDebtTokenImpl,
       abi.encodeWithSelector(
@@ -94,6 +98,7 @@ library ConfiguratorLogic {
       )
     );
 
+    // 初始化 池子
     pool.initReserve(
       input.underlyingAsset,
       aTokenProxyAddress,
@@ -234,6 +239,7 @@ library ConfiguratorLogic {
    * @param initParams The parameters that is passed to the implementation to initialize
    * @return The address of initialized proxy
    */
+  // aToken 地址   +   initialize的abi
   function _initTokenWithProxy(
     address implementation,
     bytes memory initParams
@@ -241,7 +247,7 @@ library ConfiguratorLogic {
     InitializableImmutableAdminUpgradeabilityProxy proxy = new InitializableImmutableAdminUpgradeabilityProxy(
         address(this)
       );
-
+    // delegatecall 通过 fallback 方法 去 调用 实际的 方法    abi
     proxy.initialize(implementation, initParams);
 
     return address(proxy);

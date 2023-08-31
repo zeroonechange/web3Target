@@ -16,6 +16,7 @@ import {IAaveOracle} from '../interfaces/IAaveOracle.sol';
  * - If the returned price by a Chainlink aggregator is <= 0, the call is forwarded to a fallback oracle
  * - Owned by the Aave governance
  */
+// 使用 chainlink 作为第一价格源   还有个备用的 预言机
 contract AaveOracle is IAaveOracle {
   IPoolAddressesProvider public immutable ADDRESSES_PROVIDER;
 
@@ -104,13 +105,13 @@ contract AaveOracle is IAaveOracle {
     if (asset == BASE_CURRENCY) {
       return BASE_CURRENCY_UNIT;
     } else if (address(source) == address(0)) {
-      return _fallbackOracle.getAssetPrice(asset);
+      return _fallbackOracle.getAssetPrice(asset); // 没有设置chainlink  就使用备用的
     } else {
-      int256 price = source.latestAnswer();
+      int256 price = source.latestAnswer(); // 最后一次预言机价格
       if (price > 0) {
         return uint256(price);
       } else {
-        return _fallbackOracle.getAssetPrice(asset);
+        return _fallbackOracle.getAssetPrice(asset); // 不正常就就使用备用的
       }
     }
   }

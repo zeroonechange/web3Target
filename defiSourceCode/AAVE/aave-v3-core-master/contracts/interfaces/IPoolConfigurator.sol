@@ -17,6 +17,7 @@ interface IPoolConfigurator {
    * @param variableDebtToken The address of the associated variable rate debt token
    * @param interestRateStrategyAddress The address of the interest rate strategy for the reserve
    */
+  // 一种资产的初始化 aToken  稳定币  浮动币
   event ReserveInitialized(
     address indexed asset,
     address indexed aToken,
@@ -30,6 +31,7 @@ interface IPoolConfigurator {
    * @param asset The address of the underlying asset of the reserve
    * @param enabled True if borrowing is enabled, false otherwise
    */
+  // 借钱
   event ReserveBorrowing(address indexed asset, bool enabled);
 
   /**
@@ -37,6 +39,7 @@ interface IPoolConfigurator {
    * @param asset The address of the underlying asset of the reserve
    * @param enabled True if flashloans are enabled, false otherwise
    */
+
   event ReserveFlashLoaning(address indexed asset, bool enabled);
 
   /**
