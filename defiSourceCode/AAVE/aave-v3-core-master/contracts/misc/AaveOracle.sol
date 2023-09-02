@@ -100,7 +100,7 @@ contract AaveOracle is IAaveOracle {
 
   /// @inheritdoc IPriceOracleGetter
   function getAssetPrice(address asset) public view override returns (uint256) {
-    AggregatorInterface source = assetsSources[asset];
+    AggregatorInterface source = assetsSources[asset]; // chainlink 的报价机
 
     if (asset == BASE_CURRENCY) {
       return BASE_CURRENCY_UNIT;

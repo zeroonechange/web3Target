@@ -28,7 +28,9 @@ abstract contract VersionedInitializable {
    * @dev Modifier to use in the initializer function of a contract.
    */
   modifier initializer() {
-    uint256 revision = getRevision();
+    // initializing = false
+    // revision=2  lastInitializedRevision=1
+    uint256 revision = getRevision(); // 2
     require(
       initializing || isConstructor() || revision > lastInitializedRevision,
       'Contract instance has already been initialized'

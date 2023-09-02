@@ -20,6 +20,7 @@ import {EIP712Base} from './base/EIP712Base.sol';
  * @author Aave
  * @notice Implementation of the interest bearing token for the Aave protocol
  */
+// 可升级合约
 contract AToken is VersionedInitializable, ScaledBalanceTokenBase, EIP712Base, IAToken {
   using WadRayMath for uint256;
   using SafeCast for uint256;

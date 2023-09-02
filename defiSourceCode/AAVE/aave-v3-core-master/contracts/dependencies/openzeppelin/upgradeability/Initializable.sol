@@ -33,7 +33,7 @@ contract Initializable {
       'Contract instance has already been initialized'
     );
 
-    bool isTopLevelCall = !initializing;
+    bool isTopLevelCall = !initializing; // 如果 initializing = true  也会跑的吗?
     if (isTopLevelCall) {
       initializing = true;
       initialized = true;
