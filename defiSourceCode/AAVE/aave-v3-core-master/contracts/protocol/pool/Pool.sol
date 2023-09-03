@@ -21,6 +21,14 @@ import {IPool} from '../../interfaces/IPool.sol';
 import {IACLManager} from '../../interfaces/IACLManager.sol';
 import {PoolStorage} from './PoolStorage.sol';
 
+/*
+版本控制  可升级合约   数据配置封装 
+各种逻辑都封装好 分为 Pool  Reserve  eMode  Supply Borrow Liquidation FlashLoan Bridge 
+数据结构定义好  准备好工具类 
+权限定义好  准备好抽象接口  
+表结构单独定义好
+*/
+
 /**
  * @title Pool contract
  * @author Aave
@@ -38,11 +46,32 @@ import {PoolStorage} from './PoolStorage.sol';
  * @dev All admin functions are callable by the PoolConfigurator contract defined also in the
  *   PoolAddressesProvider
  */
-// VersionedInitializable : Initializable contract
-// PoolStorage: 各种表 
-// IPool: 接口 
 
-// 这个把很多逻辑分散到各个 Logic文件里面去了  所以想要看懂具体的含义 还得看Logic里面的方法 
+/**
+
+架构图
+	权限管理	 ACLManager 
+	
+	参数管理   DataTypes  AaveProtocolDataProvider
+		DataTypes 定义了存储的参数结构以及函数参数  ReserveConfigurationMap  UserConfigurationMap  
+		UserConfiguration       提供 UserConfigurationMap 里面所有的获取方法     工具类
+		ReserveConfiguration    提供 ReserveConfigurationMap 里面所有的获取方法  工具类
+		AaveProtocolDataProvider 全是get方法  就是利用俩个 工具类 返回参数 再做一层包装  
+
+	功能角色管理	PoolAddressesProvider
+		 返回了各种管理者的地址 	例如 acl—admin oracle pool-configer data-provider
+
+	池子   Pool  PoolStorage  VersionedInitializable   表结构  可升级合约  
+		  各种逻辑都封装好 分为 Pool  Reserve  eMode  Supply Borrow Liquidation FlashLoan Bridge 
+
+	价格预言机   AaveOracle    PriceOracleSentinel
+		使用了 Chainlink     清算相关  
+
+	代币经济   
+		AToken StableDebtToken VariableDebtToken  都是可升级合约
+    
+ */
+
 contract Pool is VersionedInitializable, PoolStorage, IPool {
   using ReserveLogic for DataTypes.ReserveData;
 
@@ -177,6 +206,7 @@ contract Pool is VersionedInitializable, PoolStorage, IPool {
     bytes32 permitR,
     bytes32 permitS
   ) public virtual override {
+    // 校验原理还是比较简单的
     IERC20WithPermit(asset).permit(
       msg.sender,
       address(this),
