@@ -155,7 +155,16 @@ contract DefaultReserveInterestRateStrategy is IDefaultInterestRateStrategy {
   }
 
   /// @inheritdoc IReserveInterestRateStrategy
-  // 计算当前利率
+  /*****
+  计算贷款利率 分为固定利率和浮动利率  要根据流动性利用率来计算 aave有interest rate model 的图 超过了optimal 利率会急剧上升
+  
+  浮动利率 = 初始利率 + 预设参数1 + ( (当前利用率 - 最佳利用率)/(1- 最佳利用率) ) *  预设参数2 
+  固定利率 
+      基础利率 = 初始利率 + (当前利用率/最佳利用率) * 预设参数1   if 当前利用率 < 最佳利用率
+                初始利率 + 预设参数1 + ( (当前利用率 - 最佳利用率)/(1 - 最佳利用率) ) * 预设参数2   if 当前利用率 >= 最佳利用率
+      还有个 最佳固定利率负债总负债比率常数 O(ratio)  固定利率负债与总负债之比  再加个标准差 
+      最后固定利率 分为俩中情况给出  
+  ******/
   function calculateInterestRates(
     DataTypes.CalculateInterestRatesParams memory params
   ) public view override returns (uint256, uint256, uint256) {

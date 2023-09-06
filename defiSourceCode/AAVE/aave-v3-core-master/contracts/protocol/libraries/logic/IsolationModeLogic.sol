@@ -11,6 +11,9 @@ import {SafeCast} from '../../../dependencies/openzeppelin/contracts/SafeCast.so
  * @author Aave
  * @notice Implements the base logic for handling repayments for assets borrowed in isolation mode
  */
+/**
+  这个模式是为了 山寨币 也可以贷稳定币出来 放在一个特定的流动池   不能混用 
+  */
 library IsolationModeLogic {
   using ReserveConfiguration for DataTypes.ReserveConfigurationMap;
   using UserConfiguration for DataTypes.UserConfigurationMap;

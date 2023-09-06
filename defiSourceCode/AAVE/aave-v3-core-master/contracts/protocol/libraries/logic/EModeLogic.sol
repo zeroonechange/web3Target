@@ -17,6 +17,11 @@ import {ReserveLogic} from './ReserveLogic.sol';
  * @author Aave
  * @notice Implements the base logic for all the actions related to the eMode
  */
+/****
+   简单来说  稳定币 USDT  DAI  USDC  这些本质一样  波动小 如果抵押DAI只能贷出80%的USDT 明显不合理 
+   启用 E-mode 可贷出 97%的USDT 
+
+ ***/
 library EModeLogic {
   using ReserveLogic for DataTypes.ReserveCache;
   using ReserveLogic for DataTypes.ReserveData;

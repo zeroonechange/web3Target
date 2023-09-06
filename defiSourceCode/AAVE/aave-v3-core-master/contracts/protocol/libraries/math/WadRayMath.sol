@@ -9,6 +9,12 @@ pragma solidity ^0.8.0;
  * with 27 digits of precision)
  * @dev Operations are rounded. If a value is >=.5, will be rounded up, otherwise rounded down.
  */
+/****
+  浮点数运算
+   way  小数点18位 
+   ray 小数点27位 
+   其他为了好弄四舍五入  
+ ****/
 library WadRayMath {
   // HALF_WAD and HALF_RAY expressed with extended notation as constant with operations are not supported in Yul assembly
   uint256 internal constant WAD = 1e18;
