@@ -68,8 +68,9 @@ library ValidationLogic {
     DataTypes.ReserveData storage reserve,
     uint256 amount
   ) internal view {
-    require(amount != 0, Errors.INVALID_AMOUNT);
+    require(amount != 0, Errors.INVALID_AMOUNT); // 不能为0
 
+    // 存款池是否被启用 是否处于暂停或冻结状态
     (bool isActive, bool isFrozen, , , bool isPaused) = reserveCache
       .reserveConfiguration
       .getFlags();
@@ -77,6 +78,7 @@ library ValidationLogic {
     require(!isPaused, Errors.RESERVE_PAUSED);
     require(!isFrozen, Errors.RESERVE_FROZEN);
 
+    // 用户存款后是否超过存款限额
     uint256 supplyCap = reserveCache.reserveConfiguration.getSupplyCap();
     require(
       supplyCap == 0 ||
@@ -705,20 +707,23 @@ library ValidationLogic {
    * @param reserveConfig The reserve configuration
    * @return True if the asset can be activated as collateral, false otherwise
    */
+  //
   function validateUseAsCollateral(
     mapping(address => DataTypes.ReserveData) storage reservesData,
     mapping(uint256 => address) storage reservesList,
     DataTypes.UserConfigurationMap storage userConfig,
     DataTypes.ReserveConfigurationMap memory reserveConfig
   ) internal view returns (bool) {
+    //
     if (reserveConfig.getLtv() == 0) {
       return false;
     }
+    // 当前状态不存在任何一种抵押品资产
     if (!userConfig.isUsingAsCollateralAny()) {
       return true;
     }
     (bool isolationModeActive, , ) = userConfig.getIsolationModeState(reservesData, reservesList);
-
+    // 用户启用了 isolation mode 且当前资产未被纳入 isolation mode
     return (!isolationModeActive && reserveConfig.getDebtCeiling() == 0);
   }
 
@@ -732,6 +737,7 @@ library ValidationLogic {
    * @param reserveConfig The reserve configuration
    * @return True if the asset can be activated as collateral, false otherwise
    */
+  //
   function validateAutomaticUseAsCollateral(
     mapping(address => DataTypes.ReserveData) storage reservesData,
     mapping(uint256 => address) storage reservesList,

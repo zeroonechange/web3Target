@@ -100,8 +100,8 @@ library ReserveLogic {
       return;
     }
 
-    _updateIndexes(reserve, reserveCache);
-    _accrueToTreasury(reserve, reserveCache);
+    _updateIndexes(reserve, reserveCache); // 更新index系列变量
+    _accrueToTreasury(reserve, reserveCache); // 更新风险准备金
 
     //solium-disable-next-line
     reserve.lastUpdateTimestamp = uint40(block.timestamp);
@@ -188,15 +188,15 @@ library ReserveLogic {
       vars.nextVariableRate
     ) = IReserveInterestRateStrategy(reserve.interestRateStrategyAddress).calculateInterestRates(
       DataTypes.CalculateInterestRatesParams({
-        unbacked: reserve.unbacked,
-        liquidityAdded: liquidityAdded,
-        liquidityTaken: liquidityTaken,
-        totalStableDebt: reserveCache.nextTotalStableDebt,
-        totalVariableDebt: vars.totalVariableDebt,
-        averageStableBorrowRate: reserveCache.nextAvgStableBorrowRate,
-        reserveFactor: reserveCache.reserveFactor,
+        unbacked: reserve.unbacked, // 无存入直接铸造的代币数量上限(此变量用于跨链)
+        liquidityAdded: liquidityAdded, // 流动性增加量，在此处为存入资产的数量
+        liquidityTaken: liquidityTaken, // 流动性移除量，此变量用于贷出资产的情况，故而此值在存入流程内置为 0
+        totalStableDebt: reserveCache.nextTotalStableDebt, // 固定利率总贷出量和浮动利率总贷出量
+        totalVariableDebt: vars.totalVariableDebt, // 固定利率总贷出量和浮动利率总贷出量
+        averageStableBorrowRate: reserveCache.nextAvgStableBorrowRate, // 平均贷款固定利率
+        reserveFactor: reserveCache.reserveFactor, // 准备金比率
         reserve: reserveAddress,
-        aToken: reserveCache.aTokenAddress
+        aToken: reserveCache.aTokenAddress // aToken地址
       })
     );
 
@@ -229,6 +229,7 @@ library ReserveLogic {
    * @param reserve The reserve to be updated
    * @param reserveCache The caching layer for the reserve data
    */
+  // 计算浮动利率贷款增量     计算固定利率贷款增量
   function _accrueToTreasury(
     DataTypes.ReserveData storage reserve,
     DataTypes.ReserveCache memory reserveCache
@@ -346,10 +347,10 @@ library ReserveLogic {
     ).scaledTotalSupply();
 
     (
-      reserveCache.currPrincipalStableDebt,
-      reserveCache.currTotalStableDebt,
-      reserveCache.currAvgStableBorrowRate,
-      reserveCache.stableDebtLastUpdateTimestamp
+      reserveCache.currPrincipalStableDebt, // 当前已固定利率借入的本金
+      reserveCache.currTotalStableDebt, // 当前以固定利率借出的总资产
+      reserveCache.currAvgStableBorrowRate, // 平均固定利率
+      reserveCache.stableDebtLastUpdateTimestamp // 固定利率更新时间
     ) = IStableDebtToken(reserveCache.stableDebtTokenAddress).getSupplyData();
 
     // by default the actions are considered as not affecting the debt balances.

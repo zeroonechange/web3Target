@@ -18,13 +18,16 @@ contract PoolStorage {
   using UserConfiguration for DataTypes.UserConfigurationMap;
 
   // Map of reserves and their data (underlyingAssetOfReserve => reserveData)
+  // 对于资产地址和该资产的存款数据
   mapping(address => DataTypes.ReserveData) internal _reserves;
 
   // Map of users address and their configuration data (userAddress => userConfiguration)
+  // 用户地址与其设置之间的对应关系
   mapping(address => DataTypes.UserConfigurationMap) internal _usersConfig;
 
   // List of reserves as a map (reserveId => reserve).
   // It is structured as a mapping for gas savings reasons, using the reserve id as index
+  // 资产id 及其地址之间的对应关系 此映射为了节省gas
   mapping(uint256 => address) internal _reservesList;
 
   // List of eMode categories as a map (eModeCategoryId => eModeCategory).

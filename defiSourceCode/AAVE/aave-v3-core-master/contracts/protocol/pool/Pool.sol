@@ -206,7 +206,7 @@ contract Pool is VersionedInitializable, PoolStorage, IPool {
     bytes32 permitR,
     bytes32 permitS
   ) public virtual override {
-    // 校验原理还是比较简单的
+    // 校验原理还是比较简单的  EIP712 操作权限都在签名中
     IERC20WithPermit(asset).permit(
       msg.sender,
       address(this),

@@ -69,13 +69,16 @@ abstract contract ScaledBalanceTokenBase is MintableIncentivizedERC20, IScaledBa
     uint256 amount,
     uint256 index
   ) internal returns (bool) {
+    // 应该mint多少个
     uint256 amountScaled = amount.rayDiv(index);
+    // 不能为0
     require(amountScaled != 0, Errors.INVALID_MINT_AMOUNT);
-
+    // 获得用户当前持有的代币数量
     uint256 scaledBalance = super.balanceOf(onBehalfOf);
+    // 代币利息    _userState[onBehalfOf].additionalData 是上一次贴现因子
     uint256 balanceIncrease = scaledBalance.rayMul(index) -
       scaledBalance.rayMul(_userState[onBehalfOf].additionalData);
-
+    // 更新 贴现因子
     _userState[onBehalfOf].additionalData = index.toUint128();
 
     _mint(onBehalfOf, amountScaled.toUint128());

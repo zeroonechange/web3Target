@@ -7,19 +7,19 @@ library DataTypes {
   // 池子的配置
   struct ReserveData {
     //stores the reserve configuration
-    ReserveConfigurationMap configuration;
+    ReserveConfigurationMap configuration;  // 大量配置
     //the liquidity index. Expressed in ray
-    uint128 liquidityIndex;
+    uint128 liquidityIndex;  // 流动性池自创立到更新时间戳之间的累计利率(贴现因子)
     //the current supply rate. Expressed in ray
-    uint128 currentLiquidityRate;
+    uint128 currentLiquidityRate; // 当前的存款利率
     //variable borrow index. Expressed in ray
-    uint128 variableBorrowIndex;
+    uint128 variableBorrowIndex;  // 浮动借款利率自流动性池建立以来的累计利率(贴现因子)
     //the current variable borrow rate. Expressed in ray
-    uint128 currentVariableBorrowRate; //当前浮动资金利用率
+    uint128 currentVariableBorrowRate; //当前的浮动利率
     //the current stable borrow rate. Expressed in ray
-    uint128 currentStableBorrowRate;   //当前稳定资金利用率
+    uint128 currentStableBorrowRate;   //当前固定利率
     //timestamp of last update
-    uint40 lastUpdateTimestamp;
+    uint40 lastUpdateTimestamp; // 上次数据更新时间戳
     //the id of the reserve. Represents the position in the list of the active reserves
     uint16 id;
     //aToken address
@@ -29,13 +29,13 @@ library DataTypes {
     //variableDebtToken address
     address variableDebtTokenAddress;
     //address of the interest rate strategy
-    address interestRateStrategyAddress;
+    address interestRateStrategyAddress;  // 利率策略合约地址
     //the current treasury balance, scaled
-    uint128 accruedToTreasury;
+    uint128 accruedToTreasury;  // 当前准备金余额
     //the outstanding unbacked aTokens minted through the bridging feature
-    uint128 unbacked;
+    uint128 unbacked;  // 通过桥接功能铸造的未偿还的无担保代币
     //the outstanding debt borrowed against this asset in isolation mode
-    uint128 isolationModeTotalDebt;
+    uint128 isolationModeTotalDebt;  // 以该资产借入的未偿债务的单独模式
   }
 
   // 池子的参数  全放在一个slot里面   从 bit 0 开始 到255 结束  牛 
@@ -43,22 +43,22 @@ library DataTypes {
     //bit 0-15: LTV
     //bit 16-31: Liq. threshold
     //bit 32-47: Liq. bonus
-    //bit 48-55: Decimals
-    //bit 56: reserve is active
-    //bit 57: reserve is frozen
-    //bit 58: borrowing is enabled
+    //bit 48-55: Decimals   质押代币(ERC20)精度 
+    //bit 56: reserve is active    质押品可以使用
+    //bit 57: reserve is frozen    质押品冻结，不可使用
+    //bit 58: borrowing is enabled  
     //bit 59: stable rate borrowing enabled
     //bit 60: asset is paused
     //bit 61: borrowing in isolation mode is enabled
     //bit 62: siloed borrowing enabled
     //bit 63: flashloaning enabled
-    //bit 64-79: reserve factor
-    //bit 80-115 borrow cap in whole tokens, borrowCap == 0 => no cap
+    //bit 64-79: reserve factor    储备系数，即借款利息中上缴AAVE风险准备金的比例
+    //bit 80-115 borrow cap in whole tokens, borrowCap == 0 => no cap     代币贷出上限
     //bit 116-151 supply cap in whole tokens, supplyCap == 0 => no cap
     //bit 152-167 liquidation protocol fee
     //bit 168-175 eMode category
-    //bit 176-211 unbacked mint cap in whole tokens, unbackedMintCap == 0 => minting disabled
-    //bit 212-251 debt ceiling for isolation mode with (ReserveConfiguration::DEBT_CEILING_DECIMALS) decimals
+    //bit 176-211 unbacked mint cap in whole tokens, unbackedMintCap == 0 => minting disabled   无存入直接铸造的代币数量上限(此变量用于跨链)
+    //bit 212-251 debt ceiling for isolation mode with (ReserveConfiguration::DEBT_CEILING_DECIMALS) decimals   隔离模式中此抵押品的贷出资产上限
     //bit 252-255 unused
 
     uint256 data;  // 特么的可真牛  靠掩码和二进制运算去修改 
@@ -87,10 +87,10 @@ library DataTypes {
   // 利率模式  稳定的和浮动的
   enum InterestRateMode {NONE, STABLE, VARIABLE}
 
-  // 池子缓存？ 
+  // 缓存 
   struct ReserveCache {
-    uint256 currScaledVariableDebt;
-    uint256 nextScaledVariableDebt;
+    uint256 currScaledVariableDebt; // 当前经过贴现的可变利率贷款总额 
+    uint256 nextScaledVariableDebt; 
     uint256 currPrincipalStableDebt;
     uint256 currAvgStableBorrowRate;
     uint256 currTotalStableDebt;

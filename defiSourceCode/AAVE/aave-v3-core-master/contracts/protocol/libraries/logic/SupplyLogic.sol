@@ -58,16 +58,19 @@ library SupplyLogic {
     DataTypes.ExecuteSupplyParams memory params
   ) external {
     DataTypes.ReserveData storage reserve = reservesData[params.asset];
+    // 数据缓存 降低 gas   ReserveCache 和  ReserveData 是有一定的对应关系的
     DataTypes.ReserveCache memory reserveCache = reserve.cache();
-
+    // 更新贴现因子 即index变量 和 准备金余额
     reserve.updateState(reserveCache);
-
+    // 校验存款限制条件
     ValidationLogic.validateSupply(reserveCache, reserve, params.amount);
-
+    // 更新利率
     reserve.updateInterestRates(reserveCache, params.asset, params.amount, 0);
 
+    // 我 秦始皇  打钱
     IERC20(params.asset).safeTransferFrom(msg.sender, reserveCache.aTokenAddress, params.amount);
 
+    // mint aToken
     bool isFirstSupply = IAToken(reserveCache.aTokenAddress).mint(
       msg.sender,
       params.onBehalfOf,
@@ -75,8 +78,11 @@ library SupplyLogic {
       reserveCache.nextLiquidityIndex
     );
 
+    // aave 存款可以当作 1.贷款抵押品 2.单纯存款操作
+    // 第一笔会被默认当作是贷款抵押资产 启动资产抵押选项
     if (isFirstSupply) {
       if (
+        // 验证和设置抵押品
         ValidationLogic.validateAutomaticUseAsCollateral(
           reservesData,
           reservesList,
