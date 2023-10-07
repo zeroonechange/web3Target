@@ -1,0 +1,18 @@
+{
+  "name": "havefun2",
+  "version": "1.0.0",
+  "description": "```rust 想做的事       1.夹子机器人  清算机器人     闪电贷机器人       2.逆向分析       3.rust实际项目",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ethers": "^5.7.2"
+  }
+}
