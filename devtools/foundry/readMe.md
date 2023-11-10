@@ -413,10 +413,13 @@ windows 用  WSL
 
  Clash for Windows科学上网    打开 Allow Lan 然后看看IP地址 和端口
 
-export http_proxy='http://172.21.64.1:7890'
-export https_proxy='http://172.21.64.1:7890'
-export all_proxy='socks5://172.21.64.1:7890'
-export ALL_PROXY='socks5://172.21.64.1:7890'
+确保 git clone https://github.com/foundry-rs/forge-std.git  成功才能去 forge init
+代理地址 一定要看Clash的代理地址  之前填错了  clone 不下来
+
+export http_proxy='http://127.0.0.1:7890'
+export https_proxy='http://127.0.0.1:7890'
+export all_proxy='socks5://127.0.0.1:7890'
+export ALL_PROXY='socks5://127.0.0.1:7890'
 
 用 wget www.google.com  查看下是否可以了 最后
 
