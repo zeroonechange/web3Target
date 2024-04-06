@@ -102,4 +102,23 @@ https://pub.dev/
   onboarding: ^3.1.0					第一次使用 欢迎页  三个翻转页
   cached_network_image: ^3.2.3			图片缓存 
   expandable: ^5.0.1					类似于 更多 箭头  显示更多UI
+  info_popup: ^2.4.6					popup window  弹窗
+  
+  # Typography
+  phosphor_flutter: ^1.4.0				icon 集合   类似于阿里的 iconfan 
+  font_awesome_flutter: ^10.1.0			字体集合 
+  flutter_svg: ^1.1.1+1					加载svg 图片
+  
+  # Misc
+  url_launcher: ^6.1.5					类似 webview 加载url 
+  flutter_dotenv: ^5.0.2				加载 .env 配置信息 
+  share_plus: ^6.2.0					分享功能
+  qr_code_scanner: ^1.0.0				二维码扫描
+  intl: ^0.17.0							国际化  翻译 数字 性别 日期格式化和解析  
+  logger: ^1.1.0						logcat 打印日志 
+  package_info_plus: ^3.0.2				获取packageinfo 
+  pausable_timer: ^1.0.0+6				timer 
+  short_uuids: ^2.0.0					生成UUID 
+  flutter_cache_manager: ^3.3.0			文件缓存 可以设置保存多久
+  permission_handler: ^10.2.0			申请权限 
 ```
